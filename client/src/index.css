@@ -1,0 +1,270 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* ── Global resets & anti-scroll-leak ─────────────────────────────── */
+html,
+body {
+  overflow-x: hidden;
+  /* kill horizontal scroll everywhere */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a237e;
+  cursor: pointer;
+  user-select: none;
+  gap: 0.4rem;
+  transition: transform 0.2s ease-in-out;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+.logo-icon {
+  font-size: 1.5rem;
+}
+
+.logo-text {
+  letter-spacing: 0.5px;
+}
+
+.logo-highlight {
+  color: #4a90e2;
+}
+
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  cursor: pointer;
+  user-select: none;
+  align-items: center;
+}
+
+.logo-container h1 {
+  margin: 0;
+  line-height: 1.1;
+}
+
+.tagline {
+  font-size: 0.75rem;
+  color: #555;
+  margin-top: 2px;
+  padding-left: 1rem;
+  font-style: italic;
+}
+
+.drawer-close {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  align-self: flex-start;
+  width: auto !important;
+}
+
+
+
+section {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+:root {
+  --nav-height: 72px;
+  --gutter: 1rem;
+}
+
+/* ===== Mobile (phones) ===== */
+/* @media (max-width: 600px) {
+  nav {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem var(--gutter);
+    border-radius: 0 0 12px 12px;
+  }
+
+  nav button {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+
+  }
+  .app-wrapper {
+    padding: calc(var(--nav-height) + 0.5rem) var(--gutter) var(--gutter);
+  }
+
+  .app-wrapper select,
+  .app-wrapper input,
+  .app-wrapper textarea {
+    width: 100%;
+  }
+} */
+
+
+/* ─────────── HAMBURGER ICON ─────────── */
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  z-index: 1600;
+  margin-right: auto;
+}
+
+.hamburger-btn .bar {
+  display: block;
+  width: 24px;
+  height: 3px;
+  background: #333;
+  transition: transform .3s, opacity .3s;
+}
+
+.hamburger-btn.open .bar:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.hamburger-btn.open .bar:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-btn.open .bar:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* ─────────── SIDE DRAWER & BACKDROP ─────────── */
+.mobile-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100vh;
+  padding: var(--gutter);
+  background: #fff;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  z-index: 1500;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-drawer.open {
+  transform: translateX(0);
+}
+
+.mobile-drawer button {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+/* .mobile-drawer button::after{content:" >";font-weight:bold;}  */
+.logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1400;
+}
+
+.nav-links.desktop-only {
+  display: flex;
+  /* line them up */
+  gap: 1rem;
+  /* space between buttons */
+  flex-wrap: wrap;
+  /* wrap if window shrinks a bit */
+  align-items: center;
+}
+
+@media (max-width: 600px) {
+  nav {
+    flex-wrap: nowrap;
+    /* stay in one line      */
+    overflow-x: auto;
+    /* enable horizontal scroll   */
+    -webkit-overflow-scrolling: touch;
+    /* momentum scroll iOS  */
+    gap: 0.5rem;
+    padding: 0.5rem var(--gutter);
+    border-radius: 0 0 12px 12px;
+    scrollbar-width: none;
+    /* hide scrollbar on Firefox */
+    justify-content: flex-start;
+  }
+
+  nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* hide on Chrome */
+
+  .hamburger-btn {
+    display: flex;
+  }
+
+  /* show burger */
+
+
+  nav button {
+    flex: 0 0 auto;
+    /* no grow, fixed width */
+    width: auto;
+    /* shrink to fit text   */
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .nav-links.desktop-only {
+    display: none;
+  }
+
+  /* keep content offset for nav height (≈ var(--nav-height)) */
+  .app-wrapper {
+    padding: calc(var(--nav-height) + 0.5rem) var(--gutter) var(--gutter);
+  }
+}
+
+@media (min-width: 601px) and (max-width: 900px) {
+  nav button {
+    padding: 0.6rem 1rem;
+    font-size: 0.95rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .section-card {
+    /* name it what you like */
+    max-width: 1100px;
+    margin: 0 auto;
+    /* centers the card */
+  }
+}

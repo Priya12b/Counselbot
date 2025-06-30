@@ -1,0 +1,32 @@
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+require('dotenv').config();
+
+const app = express();
+app.use(cors());
+app.use(bodyParser.json());
+
+// Routes
+const authRoutes = require("./routes/auth");
+const documentRoutes = require('./routes/documents');
+const clientRoutes = require("./routes/clients");
+const noteRoutes = require("./routes/notes");
+const genRoute = require("./routes/generate");
+const chatRoutes = require("./routes/chat");
+const fileRoutes = require("./routes/files");
+const templateRoutes = require("./routes/templates");
+const path = require("path");
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/api/templates", templateRoutes);
+app.use("/api/files", fileRoutes);
+app.use("/api/chat", chatRoutes);
+app.use("/api/generate", genRoute);
+app.use("/api/notes", noteRoutes);
+app.use("/api/clients", clientRoutes);
+app.use('/api/documents', documentRoutes);
+app.use("/api/auth", authRoutes)
+
+app.listen(5000, () => {
+  console.log('Server running on http://localhost:5000');
+});
