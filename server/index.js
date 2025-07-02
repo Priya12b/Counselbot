@@ -16,6 +16,7 @@ const genRoute = require("./routes/generate");
 const chatRoutes = require("./routes/chat");
 const fileRoutes = require("./routes/files");
 const templateRoutes = require("./routes/templates");
+
 const path = require("path");
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/templates", templateRoutes);
@@ -27,6 +28,13 @@ app.use("/api/clients", clientRoutes);
 app.use('/api/documents', documentRoutes);
 app.use("/api/auth", authRoutes)
 
-app.listen(5000, () => {
-  console.log('Server running on http://localhost:5000');
-});
+module.exports = app;
+// app.listen(5000, () => {
+//   console.log('Server running on http://localhost:5000');
+// });
+// Only listen when not in test mode
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(5000, () => {
+    console.log("Server running on 5000");
+  });
+}

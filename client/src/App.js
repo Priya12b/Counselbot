@@ -17,7 +17,7 @@ import toast from "react-hot-toast";
 // -----------------------------------------------------------------------------
 //  🏠  Root app component
 // -----------------------------------------------------------------------------
-export default function App() {
+function App() {
   /* ── Global UI state ─────────────────────────────────────────────── */
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [page, setPage] = useState("login");
@@ -366,7 +366,7 @@ export default function App() {
           Side drawer (mobile)
       ----------------------------------------------------------------- */}
       {/* ── Side drawer (mobile) ───────────────────────────── */}
-      <aside className={`mobile-drawer ${isDrawerOpen ? "open" : ""}`}>
+      <aside className={`mobile-drawer ${isDrawerOpen ? "open" : ""}`} role="complementary" aria-label="Mobile Drawer">
         {/* Close-drawer button */}
         <button                      // <— use a real button for a11y
           className="drawer-close"
@@ -463,7 +463,7 @@ export default function App() {
               {/* --- smart mode inputs --- */}
               {genMode === "smart" && (
                 <>
-                  <label style={styles.label}>📄 Document Type:</label>
+                  <label  style={styles.label}>📄 Document Type:</label>
                   {/* <select
       value={docType}
       onChange={(e) => setDocType(e.target.value)}
@@ -565,3 +565,4 @@ export default function App() {
     </div>
   );
 }
+export default App;
