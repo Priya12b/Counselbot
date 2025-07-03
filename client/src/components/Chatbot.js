@@ -14,6 +14,8 @@ function Chatbot() {
   const chatRef = useRef(null);
   const [hoveredChat, setHoveredChat] = useState(null);
   const [openMenuId, setOpenMenuId] = useState(null);
+  const [loading, setLoading] = useState(false);
+
 
   const toggleMenu = (id) => {
     setOpenMenuId(openMenuId === id ? null : id);
@@ -109,7 +111,9 @@ function Chatbot() {
     setMessages((prev) => [...prev, userMsg]);
     setLastMessage(msg);
     setInput("");
+    setLoading(true);          // 🔄 start spinner
 
+    try{
     const token = localStorage.getItem("token");
     const res = await axios.post(
       "http://localhost:5000/api/chat",
@@ -139,7 +143,13 @@ function Chatbot() {
         ...prev,
       ]);
     }
-  };
+   } catch (err) {
+    console.error(err);
+    toast.error("😬 Something blew up, try again.");
+  } finally {
+    setLoading(false);       // 🛑 stop spinner
+  }
+};
 
   const loadSessions = async () => {
     const token = localStorage.getItem("token");
@@ -319,6 +329,7 @@ function Chatbot() {
       padding: "1.5rem",
       boxSizing: "border-box",   // include padding in height calc
       paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))",
+       position: "relative",  
     },
 
     /* 2️⃣  CHAT BOX — flex-grow so it takes *only* leftover space */
@@ -430,7 +441,42 @@ function Chatbot() {
       cursor: "pointer",
       textAlign: "left",
     },
+
+    loaderOverlay: {
+  position: "absolute",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  background: "rgba(255,255,255,0.7)",
+  backdropFilter: "blur(1.5px)",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  borderRadius: "8px",   // matches chat box corners
+  zIndex: 10,
+},
+
+spinner: {
+  width: 32,
+  height: 32,
+  border: "4px solid #3498db",
+  borderTopColor: "transparent",
+  borderRadius: "50%",
+  animation: "spin 0.7s linear infinite",
+},
+
+
   };
+
+  const Loader = () => (
+  <div style={styles.loaderOverlay}>
+    <div style={styles.spinner} />
+    <span style={{ marginTop: 8 }}>Thinking…</span>
+  </div>
+);
+
 
   return (
     <div style={styles.container}>
@@ -505,6 +551,8 @@ function Chatbot() {
             </div>
           ))}
           <div ref={chatRef} />
+          {loading && <Loader />}
+
         </div>
 
         {/* Input row */}

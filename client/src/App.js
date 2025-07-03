@@ -32,6 +32,8 @@ function App() {
   const [docSaved, setDocSaved] = useState(false);
   const [genMode, setGenMode] = useState("smart"); // 'smart' | 'template'
   const [templatePath, setTemplatePath] = useState("");
+  const [loading, setLoading] = useState(false);
+
 
 
   /* ── Client‑specific state ───────────────────────────────────────── */
@@ -152,6 +154,7 @@ function App() {
     if (!clientInfo) return toast.error("Client Info required!");
 
     try {
+        setLoading(true);   
       let res;
       if (genMode === "smart") {
         if (!docType) return toast.error("Pick a doc type!");
@@ -171,7 +174,18 @@ function App() {
       console.error(err);
       setGeneratedDoc("Generation failed.");
     }
+    finally {
+    setLoading(false);              // 🛑 stop spinner whether success or fail
+  }
   };
+
+  const Loader = () => (
+  <div className="loader-overlay">
+    <div className="spinner" />
+    <span>Generating… hang tight ⚙️</span>
+  </div>
+);
+
 
   const handleSave = async () => {
     try {
@@ -515,8 +529,10 @@ function App() {
                 style={{ ...styles.input, width: "90%" }}
               />
 
-              <button onClick={handleGenerate} style={styles.button}>
-                {genMode === "smart" ? "Generate Document" : "Fill Template"}
+              <button onClick={handleGenerate} style={{...styles.button, opacity: loading ? 0.6 : 1,
+    pointerEvents: loading ? "none" : "auto",
+  }}>
+                {loading ? "Generating..." : genMode === "smart" ? "Generate Document" : "Fill Template"}
               </button>
 
 
@@ -530,6 +546,7 @@ function App() {
                   <button onClick={downloadPDF} style={styles.button}>
                     Download PDF
                   </button>
+                   {loading && <Loader />}
                 </div>
               )}
             </div>
@@ -562,6 +579,7 @@ function App() {
       )}
 
       <Toaster position="top-center" />
+     
     </div>
   );
 }
