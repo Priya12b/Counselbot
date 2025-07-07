@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const auth = require("../middleware/auth");
+// const auth = require("../middleware/auth");
+const { authMiddleware } = require("../middleware/auth");
 const db = require("../db/connection");
 const path = require("path");
 const fs = require("fs");
@@ -24,7 +25,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // ✅ Upload Route
-router.post("/upload", auth, upload.single("file"), async (req, res) => {
+router.post("/upload", authMiddleware, upload.single("file"), async (req, res) => {
   const userId = req.user.id;
   const clientId = req.body.clientId ? parseInt(req.body.clientId) : null;
   // ...
@@ -36,7 +37,7 @@ router.post("/upload", auth, upload.single("file"), async (req, res) => {
 });
 
 // Personal files
-router.get("/my", auth, async (req, res) => {
+router.get("/my", authMiddleware, async (req, res) => {
   const userId = req.user.id;
   const [files] = await db
     .promise()
@@ -44,7 +45,7 @@ router.get("/my", auth, async (req, res) => {
   res.json(files);
 });
 
-router.get("/byClient/:clientId", auth, async (req, res) => {
+router.get("/byClient/:clientId", authMiddleware, async (req, res) => {
   const userId = req.user.id;
   const clientId = parseInt(req.params.clientId);
 
@@ -66,13 +67,13 @@ router.get("/byClient/:clientId", auth, async (req, res) => {
 
 
 // ✅ Download File
-router.get("/download/:filename", auth, (req, res) => {
+router.get("/download/:filename", authMiddleware, (req, res) => {
   const filePath = path.join(__dirname, "..", "uploads", req.params.filename);
   res.download(filePath);
 });
 
 // ✅ Delete File
-router.delete("/:id", auth, (req, res) => {
+router.delete("/:id", authMiddleware, (req, res) => {
   const fileId = req.params.id;
   const userId = req.user.id;
 

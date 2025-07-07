@@ -16,7 +16,7 @@ const genRoute = require("./routes/generate");
 const chatRoutes = require("./routes/chat");
 const fileRoutes = require("./routes/files");
 const templateRoutes = require("./routes/templates");
-
+app.use("/api/users", require("./routes/users"));
 const path = require("path");
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/templates", templateRoutes);

@@ -1,9 +1,11 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { AuthContext } from "../AuthContext";
 
 function AddClientForm({ onAdd }) {
+  
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
   const [errors, setErrors] = useState({});   // 🆕 hold field‑level errors
 
@@ -35,7 +37,11 @@ function AddClientForm({ onAdd }) {
     setErrors(validate(next)); // live validation
   };
 
+  const { user } = useContext(AuthContext);
+if (user?.role === "client") return null; 
+
   const addClient = async () => {
+
     const currentErrors = validate(form);
     if (Object.keys(currentErrors).length) {
       setErrors(currentErrors);

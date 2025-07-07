@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db/connection");
-const auth = require("../middleware/auth");
-
+// const auth = require("../middleware/auth");
+const { authMiddleware } = require("../middleware/auth");
 // ✅ Add note for a client
-router.post("/add", auth, (req, res) => {
+router.post("/add", authMiddleware, (req, res) => {
   const { client_id, note_text } = req.body;
 
   db.query(
@@ -18,7 +18,7 @@ router.post("/add", auth, (req, res) => {
 });
 
 // ✅ Get all notes for a client
-router.get("/byClient/:id", auth, (req, res) => {
+router.get("/byClient/:id", authMiddleware, (req, res) => {
   const clientId = req.params.id;
 
   db.query(
@@ -34,7 +34,7 @@ router.get("/byClient/:id", auth, (req, res) => {
 
 
 // ✅ Edit a note
-router.put("/edit/:id", auth, (req, res) => {
+router.put("/edit/:id", authMiddleware, (req, res) => {
   const noteId = req.params.id;
   const { note_text } = req.body;
 
@@ -49,7 +49,7 @@ router.put("/edit/:id", auth, (req, res) => {
 });
 
 // ✅ Delete a note
-router.delete("/delete/:id", auth, (req, res) => {
+router.delete("/delete/:id", authMiddleware, (req, res) => {
   const noteId = req.params.id;
 
   db.query("DELETE FROM notes WHERE id = ?", [noteId], (err, result) => {

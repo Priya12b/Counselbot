@@ -96,6 +96,7 @@ import "./Login.css";                   // 👈 new styles
 function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const { login } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -110,8 +111,11 @@ function Login() {
         "http://localhost:5000/api/auth/login",
         form
       );
+            console.log("ROLE:", user?.role);
+console.log("FIRM ID:", user?.firm_id);
       login(res.data.user, res.data.token);
       toast.success("Logged in successfully!");
+
     } catch (err) {
       toast.error(err.response?.data?.message || "❌ Login failed");
     }

@@ -6,8 +6,10 @@ import axios from "axios";
 import SavedDocs from "./SavedDocs";
 import Chatbot from "./components/Chatbot";
 import ClientList from "./components/ClientList";
+import ClientHome from "./components/ClientHome";
 import ClientProfile from "./components/ClientProfile";
 import FileUploader from "./components/FileUploader";
+import AssignClient from "./components/AssignClient";
 import TemplateUploader from "./components/TemplateUploader";
 import jsPDF from "jspdf";
 import "./index.css";
@@ -154,7 +156,7 @@ function App() {
     if (!clientInfo) return toast.error("Client Info required!");
 
     try {
-        setLoading(true);   
+      setLoading(true);
       let res;
       if (genMode === "smart") {
         if (!docType) return toast.error("Pick a doc type!");
@@ -175,16 +177,16 @@ function App() {
       setGeneratedDoc("Generation failed.");
     }
     finally {
-    setLoading(false);              // 🛑 stop spinner whether success or fail
-  }
+      setLoading(false);              // 🛑 stop spinner whether success or fail
+    }
   };
 
   const Loader = () => (
-  <div className="loader-overlay">
-    <div className="spinner" />
-    <span>Generating… hang tight ⚙️</span>
-  </div>
-);
+    <div className="loader-overlay">
+      <div className="spinner" />
+      <span>Generating… hang tight ⚙️</span>
+    </div>
+  );
 
 
   const handleSave = async () => {
@@ -259,12 +261,21 @@ function App() {
           >
             Dashboard
           </button>
+
+          {user?.role === "admin" && (
+            <button
+              style={getNavBtnStyle("assign_client")}
+              onClick={() => { setPage("assign_client"); /* close drawer optional */ }}
+              onMouseEnter={() => setHoveredBtn("assign_client")}
+              onMouseLeave={() => setHoveredBtn(null)}
+            >
+              Assign Client
+            </button>
+          )}
+
+
           <button
             style={getNavBtnStyle("generate")}
-            // onClick={() => {
-            //   setPage("generate");
-            //   setTimeout(() => generateRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
-            // }}
             onClick={() => {
               setPage("generate");
               setTimeout(() => generateRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
@@ -408,7 +419,13 @@ function App() {
       ) : (
         <div className="section-card" style={styles.section}>
           <h3>Welcome, {user.name}!</h3>
-          <ClientList setPage={setPage} setClientId={setClientId} />
+          {/* <ClientList setPage={setPage} setClientId={setClientId} /> */}
+          {user.role === "client"
+            ? <ClientHome setPage={setPage} />      // 🔄 show client‑friendly dash
+            : <ClientList setPage={setPage} setClientId={setClientId} />}
+
+          {page === "assign_client" && user?.role === "admin" && <AssignClient />}
+
 
           {/* -------------- Generate Docs -------------- */}
           {page === "generate" && (
@@ -477,7 +494,7 @@ function App() {
               {/* --- smart mode inputs --- */}
               {genMode === "smart" && (
                 <>
-                  <label  style={styles.label}>📄 Document Type:</label>
+                  <label style={styles.label}>📄 Document Type:</label>
                   {/* <select
       value={docType}
       onChange={(e) => setDocType(e.target.value)}
@@ -529,9 +546,10 @@ function App() {
                 style={{ ...styles.input, width: "90%" }}
               />
 
-              <button onClick={handleGenerate} style={{...styles.button, opacity: loading ? 0.6 : 1,
-    pointerEvents: loading ? "none" : "auto",
-  }}>
+              <button onClick={handleGenerate} style={{
+                ...styles.button, opacity: loading ? 0.6 : 1,
+                pointerEvents: loading ? "none" : "auto",
+              }}>
                 {loading ? "Generating..." : genMode === "smart" ? "Generate Document" : "Fill Template"}
               </button>
 
@@ -546,7 +564,7 @@ function App() {
                   <button onClick={downloadPDF} style={styles.button}>
                     Download PDF
                   </button>
-                   {loading && <Loader />}
+                  {loading && <Loader />}
                 </div>
               )}
             </div>
@@ -579,7 +597,7 @@ function App() {
       )}
 
       <Toaster position="top-center" />
-     
+
     </div>
   );
 }

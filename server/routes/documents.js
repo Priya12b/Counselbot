@@ -2,8 +2,9 @@ const express = require("express");
 const router = express.Router();
 const { generateDocWithGemini } = require("../services/geminiService");
 const db = require('../db/connection');
-const auth = require("../middleware/auth");
+// const auth = require("../middleware/auth");
 const mammoth = require("mammoth");
+const { authMiddleware } = require("../middleware/auth");
 
 
 
@@ -55,7 +56,7 @@ router.post("/generate", async (req, res) => {
 });
 
 // ✅ 2. Save document (private)
-router.post("/save", auth, (req, res) => {
+router.post("/save", authMiddleware, (req, res) => {
   const { client_id, doc_type, content } = req.body;
   const user_id = req.user.id;
 
@@ -74,7 +75,7 @@ router.post("/save", auth, (req, res) => {
 });
 
 // ✅ 3. Save-from-chat (private)
-router.post("/save-from-chat", auth, async (req, res) => {
+router.post("/save-from-chat", authMiddleware, async (req, res) => {
   const userId = req.user.id;
   const { docType, clientId = null, content } = req.body;
 
@@ -92,7 +93,7 @@ router.post("/save-from-chat", auth, async (req, res) => {
 });
 
 // ✅ 4. Fetch documents of logged-in user only (private)
-router.get("/", auth, async (req, res) => {
+router.get("/", authMiddleware, async (req, res) => {
   const userId = req.user.id;
 
   try {
@@ -115,7 +116,7 @@ router.get("/", auth, async (req, res) => {
 
 // ✅ 5. Generate with template (private)
 
-router.post("/generate-from-template", auth, async (req, res) => {
+router.post("/generate-from-template", authMiddleware, async (req, res) => {
   const { templatePath, clientInfo } = req.body;
   if (!templatePath || !clientInfo) {
     return res.status(400).json({ success: false, message: "Missing template or info" });
@@ -156,7 +157,7 @@ Just generate filled document. No extra words or formatting.
 });
 
 
-router.get("/byClient/:id", auth, (req, res) => {
+router.get("/byClient/:id", authMiddleware, (req, res) => {
   const clientId = req.params.id;
   const userId = req.user.id;
 
@@ -172,7 +173,7 @@ router.get("/byClient/:id", auth, (req, res) => {
 
 
 // DELETE /api/documents/:id
-router.delete("/:id", auth, (req, res) => {
+router.delete("/:id", authMiddleware, (req, res) => {
   const userId = req.user.id;
   const docId = req.params.id;
 

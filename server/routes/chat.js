@@ -171,13 +171,14 @@
 const express = require("express");
 const router  = express.Router();
 const db      = require("../db/connection");
-const auth    = require("../middleware/auth");
+// const auth    = require("../middleware/auth");
+const { authMiddleware } = require("../middleware/auth");
 
 // 👉 our small helper that calls Gemini’s generateContent endpoint
 const { chatWithGemini } = require("../services/geminiChat");
 
 /* ─────────────────────────  POST /api/chat  ───────────────────────── */
-router.post("/", auth, async (req, res) => {
+router.post("/", authMiddleware, async (req, res) => {
   const userId                          = req.user.id;
   const { message, history = [], sessionId = null, clientId = null } = req.body;
 
@@ -258,7 +259,7 @@ const messages = [
 });
 
 /* ─────────────────────  GET /api/chat/sessions  ───────────────────── */
-router.get("/sessions", auth, async (req, res) => {
+router.get("/sessions", authMiddleware, async (req, res) => {
   const userId = req.user.id;
   const [rows] = await db.promise().query(
     `SELECT s.id, s.title, s.created_at, s.is_pinned,
@@ -273,7 +274,7 @@ router.get("/sessions", auth, async (req, res) => {
 });
 
 /* ───────────────────  DELETE /api/chat/sessions/:id  ───────────────── */
-router.delete("/sessions/:id", auth, async (req, res) => {
+router.delete("/sessions/:id", authMiddleware, async (req, res) => {
   const sessionId = req.params.id;
   try {
     await db.promise().query(
@@ -292,7 +293,7 @@ router.delete("/sessions/:id", auth, async (req, res) => {
 });
 
 /* ───────────────  PUT /api/chat/sessions/:id/pin  ─────────────── */
-router.put("/sessions/:id/pin", auth, async (req, res) => {
+router.put("/sessions/:id/pin", authMiddleware, async (req, res) => {
   const sessionId         = req.params.id;
   const { is_pinned }     = req.body;
   try {
@@ -312,7 +313,7 @@ router.put("/sessions/:id/pin", auth, async (req, res) => {
 });
 
 /* ─────────────  PUT /api/chat/sessions/:id/rename  ───────────── */
-router.put("/sessions/:id/rename", auth, async (req, res) => {
+router.put("/sessions/:id/rename", authMiddleware, async (req, res) => {
   const sessionId = req.params.id;
   const { newTitle } = req.body;
   try {
@@ -328,7 +329,7 @@ router.put("/sessions/:id/rename", auth, async (req, res) => {
 });
 
 /* ───────  GET /api/chat/sessions/:id  (return messages)  ─────── */
-router.get("/sessions/:id", auth, async (req, res) => {
+router.get("/sessions/:id", authMiddleware, async (req, res) => {
   const sessionId = req.params.id;
   const userId    = req.user.id;
 

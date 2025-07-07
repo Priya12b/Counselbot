@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const auth = require("../middleware/auth");
+// const auth = require("../middleware/auth");
+const { authMiddleware } = require("../middleware/auth");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
@@ -21,7 +22,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // 👇 Route to upload template
-router.post("/upload", auth, upload.single("template"), (req, res) => {
+router.post("/upload", authMiddleware, upload.single("template"), (req, res) => {
   console.log("Upload route hit");
   console.log("File info:", req.file);
   if (!req.file) return res.status(400).json({ message: "No file uploaded" });
