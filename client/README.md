@@ -58,6 +58,12 @@
 - Lawyers can manage only their assigned or private clients
 - Clients are fully isolated
 
+---
+### 💬 **Real-Time Chat Enhancements (Lawyer ↔ Client) **
+- 🔁 Two-way chat between lawyer and client
+- Share case related files to each other 
+- Clean timestamps displayed under each message
+
 
 📝 **Notes System**
 - Add/edit/delete notes for each client

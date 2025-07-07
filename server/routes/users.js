@@ -17,42 +17,17 @@ router.get("/lawyers", authMiddleware, requireRole("admin"), (req, res) => {
 
 module.exports = router;
 
-
-
-
-
 // 📩 Register route hit with data: {
-//   name: 'kinjal',
-//   email: 'kinjal@gmail.com',
-//   password: 'kinjal@123',
-//   role: 'lawyer',
-//   firm_name: 'kinjal'
-// }
-// 📩 Register route hit with data: {
-//   name: 'abc',
-//   email: 'abc@gmail.com',
-//   password: 'abc@12345',
-//   role: 'client',
-//   firm_name: 'kinjal'
-// }
-// 📩 Register route hit with data: {
-//   name: 'bhavesh',
-//   email: 'bhavesh@gmail.com',
-//   password: 'bhavesh@123',
+//   name: 'Priya',
+//   email: 'priya@gmail.com',
+//   password: 'Priya@123',
 //   role: 'admin',
-//   firm_name: 'Bhavesh'
+//   firm_name: 'Priya'
 // }
 // 📩 Register route hit with data: {
-//   name: 'bhavesh1',
-//   email: 'bhavesh1@gmail.com',
-//   password: 'abc@12345',
+//   name: 'Lawyer_Priya',
+//   email: 'LawyerPriya@gmail.com', 
+//   password: 'Priya@123',
 //   role: 'lawyer',
-//   firm_name: 'Bhavesh'
-// }
-// 📩 Register route hit with data: {
-//   name: 'bhavesh2',
-//   email: 'bhavesh2@gmail.com',
-//   password: 'abc@12345',
-//   role: 'client',
-//   firm_name: 'Bhavesh'
+//   firm_name: 'Priya'
 // }

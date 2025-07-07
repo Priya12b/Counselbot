@@ -10,6 +10,7 @@ import ClientHome from "./components/ClientHome";
 import ClientProfile from "./components/ClientProfile";
 import FileUploader from "./components/FileUploader";
 import AssignClient from "./components/AssignClient";
+import MyLawyerChat from "./components/MyLawyerChat";
 import TemplateUploader from "./components/TemplateUploader";
 import jsPDF from "jspdf";
 import "./index.css";
@@ -273,6 +274,17 @@ function App() {
             </button>
           )}
 
+{user.role === "client" && (
+  <button
+    style={getNavBtnStyle("lawyer_chat")}
+    onClick={() => setPage("lawyer_chat")}
+    onMouseEnter={() => setHoveredBtn("lawyer_chat")}
+    onMouseLeave={() => setHoveredBtn(null)}
+  >
+    Chat with Lawyer
+  </button>
+)}
+
 
           <button
             style={getNavBtnStyle("generate")}
@@ -426,6 +438,7 @@ function App() {
 
           {page === "assign_client" && user?.role === "admin" && <AssignClient />}
 
+{page === "lawyer_chat" && user.role === "client" && <MyLawyerChat />}
 
           {/* -------------- Generate Docs -------------- */}
           {page === "generate" && (
