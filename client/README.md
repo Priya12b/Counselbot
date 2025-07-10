@@ -47,8 +47,8 @@
 | Role     | Access Capabilities |
 |----------|---------------------|
 | 👑 **Admin** | Full access to all clients within their firm<br>Can add/edit/delete clients<br>Can assign clients to any lawyer in the same firm<br>View all documents, notes, files |
-| 👨‍⚖️ **Lawyer** | Can add personal (private) clients<br>Can access/edit/delete only their own clients and assigned ones<br>Use chatbot, upload files, generate documents |
-| 👤 **Client** | Can chat with AI, generate legal docs, upload/view personal files<br>No access to client list, cannot add/edit clients |
+| 👨‍⚖️ **Lawyer** | Can add personal (private) clients<br>Can access/edit/delete only their own clients and assigned ones<br>Can Chat with their Clients personally<br>Use chatbot, upload files, generate documents |
+| 👤 **Client** | Can chat with AI, generate legal docs, upload/view personal files<br>No access to client list, cannot add/edit clients<br>Can Chat with their Lawyer |
 
 ---
 
@@ -59,8 +59,8 @@
 - Clients are fully isolated
 
 ---
-### 💬 **Real-Time Chat Enhancements (Lawyer ↔ Client) **
-- 🔁 Two-way chat between lawyer and client
+### 💬** Real-Time Chat Enhancements (Lawyer ↔ Client)**
+- Two-way chat between lawyer and client
 - Share case related files to each other 
 - Clean timestamps displayed under each message
 
@@ -90,6 +90,10 @@
 - Voice input 🎙️
 - Multilingual Input (Hindi, Gujarati, English)
 
+📌 **Chat History**
+- Save multiple chats with titles
+- Edit, delete, pin chats
+
 📂 **File Management**
 - Upload files per client or personal
 - View/download/delete files
@@ -99,9 +103,7 @@
 - View all generated docs per client
 - Delete, preview, and download options
 
-📌 **Chat History**
-- Save multiple chats with titles
-- Edit, delete, pin chats
+
 
 ---
 
@@ -131,7 +133,7 @@ cd counselbot
 cd server
 npm install
 ```
-#### FRontend
+#### Frontend
 ```bash
 cd ../client
 npm install
@@ -163,7 +165,7 @@ npm start
 ```
 ---
 ### Author
-Priyanka
-Engineering Student @ IIIT Vadodara
+Priyanka<br>
+Engineering Student @ IIIT Vadodara<br>
 Building tools that make real-world impact 💼⚖️
 

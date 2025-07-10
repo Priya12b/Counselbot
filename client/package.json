@@ -9,6 +9,8 @@
     "emoji-picker-react": "^4.12.3",
     "franc-min": "^6.2.0",
     "jspdf": "^3.0.1",
+    "jspdf-autotable": "^5.0.2",
+    "jspdf-fontkit": "^0.0.7",
     "jwt-decode": "^4.0.0",
     "langs": "^2.0.0",
     "react": "^19.1.0",

@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { jsPDF } from "jspdf";
+import "./fonts/NotoDev-normal.js";   // Hindi
+import "./fonts/NotoGuj-normal.js";   // Gujarati
+
+
 
 function SavedDocs() {
   const [documents, setDocuments] = useState([]);
@@ -27,13 +31,6 @@ function SavedDocs() {
     fetchDocs();
   }, []);
 
-  // const downloadPDF = () => {
-  //   if (!selectedDoc) return;
-  //   const pdf = new jsPDF();
-  //   pdf.text(selectedDoc.content, 10, 10);
-  //   pdf.save(`${selectedDoc.doc_type || "document"}.pdf`);
-  // };
-
   const handleDelete = async (docId) => {
     if (!window.confirm("Trash this doc forever?")) return;
 
@@ -58,32 +55,49 @@ function SavedDocs() {
   };
 
 
-  const downloadPDF = () => {
-    if (!selectedDoc || !selectedDoc.content) return;
+  const detectLang = (text) => {
+  if (/[\u0A80-\u0AFF]/.test(text)) return "gu";  // Gujarati Unicode block
+  if (/[\u0900-\u097F]/.test(text)) return "hi";  // Devanagari block (Hindi)
+  return "en"; // default to English
+};
 
-    const pdf = new jsPDF();
-    const pageHeight = pdf.internal.pageSize.height;
-    const lineHeight = 10;
-    const margin = 10;
-    const maxLineWidth = 190; // usable width for A4 (210mm - 2*10mm margin)
+const downloadPDF = () => {
+  if (!selectedDoc || !selectedDoc.content) return;
 
-    // Split text to fit the page width
-    const lines = pdf.splitTextToSize(selectedDoc.content, maxLineWidth);
+  const text = selectedDoc.content;
+  const lang = detectLang(text);
 
-    let y = margin;
-    lines.forEach(line => {
-      if (y + lineHeight > pageHeight - margin) {
-        pdf.addPage();
-        y = margin;
-      }
-      pdf.text(line, margin, y);
-      y += lineHeight;
-    });
+  const pdf = new jsPDF();
+  const pageHeight = pdf.internal.pageSize.height;
+  const lineHeight = 10;
+  const margin = 10;
+  const maxLineWidth = 190;
 
-    const filename = `${selectedDoc.doc_type || "document"}.pdf`;
-    pdf.save(filename);
-  };
+  // 👇 Set the correct font based on language
+  if (lang === "hi") {
+    pdf.setFont("NotoSansDevanagari-Regular");  
+  } else if (lang === "gu") {
+    pdf.setFont("NotoSansGujarati-Regular"); // Gujarati font 
+  } else {
+    pdf.setFont("helvetica"); // default English font
+  }
 
+  pdf.setFontSize(12);
+  const lines = pdf.splitTextToSize(text, maxLineWidth);
+
+  let y = margin;
+  lines.forEach(line => {
+    if (y + lineHeight > pageHeight - margin) {
+      pdf.addPage();
+      y = margin;
+    }
+    pdf.text(line, margin, y);
+    y += lineHeight;
+  });
+
+  const filename = `${selectedDoc.doc_type || "document"}.pdf`;
+  pdf.save(filename);
+};
 
   const styles = {
     container: {
@@ -96,21 +110,7 @@ function SavedDocs() {
       listStyle: "none",
       padding: 0,
     },
-    //     delBtn: {
-    //   backgroundColor: "#dc3545",
-    //   color: "#fff",
-    //   marginLeft: "0.75rem",
-    // },
-
-    // docItem: {
-    //   border: "1px solid #ddd",
-    //   borderRadius: "8px",
-    //   padding: "1rem",
-    //   marginBottom: "1rem",
-    //   backgroundColor: "#fdfdfd",
-    //   cursor: "pointer",
-    //   transition: "0.2s",
-    // },
+    
     docItem: {
       display: "flex",
       justifyContent: "space-between",
@@ -160,14 +160,7 @@ function SavedDocs() {
       ) : (
         <ul style={styles.docList}>
           {documents.map((doc) => (
-            // <li
-            //   key={doc.id}
-            //   style={styles.docItem}
-            //   onClick={() => setSelectedDoc(doc)}
-            // >
-            //   <strong>{doc.doc_type}</strong> — {doc.client_name || "No Client Linked"}<br />
-            //   <small>{new Date(doc.created_at).toLocaleString()}</small>
-            // </li>
+          
             <li key={doc.id} style={styles.docItem}>
               <div onClick={() => setSelectedDoc(doc)} style={{ cursor: "pointer" }}>
                 <strong>{doc.doc_type}</strong> — {doc.client_name || "No Client Linked"}<br />

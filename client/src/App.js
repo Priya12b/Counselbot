@@ -13,6 +13,9 @@ import AssignClient from "./components/AssignClient";
 import MyLawyerChat from "./components/MyLawyerChat";
 import TemplateUploader from "./components/TemplateUploader";
 import jsPDF from "jspdf";
+import "jspdf-autotable"; // If you're using tables too
+import "./fonts/NotoDev-normal";
+import  "./fonts/NotoGuj-normal" // <-- Adjust path
 import "./index.css";
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
@@ -213,14 +216,46 @@ function App() {
     }
   };
 
-  const downloadPDF = () => {
+
+
+  // const downloadPDF = () => {
+  //   const pdf = new jsPDF();
+  //   const pageHeight = pdf.internal.pageSize.height;
+  //   const lineHeight = 10;
+  //   const margin = 20;
+  //   const lines = pdf.splitTextToSize(generatedDoc, 170);
+  //   let y = margin;
+  //   lines.forEach((line) => {
+  //     if (y + lineHeight > pageHeight - margin) {
+  //       pdf.addPage();
+  //       y = margin;
+  //     }
+  //     pdf.text(line, margin, y);
+  //     y += lineHeight;
+  //   });
+  //   pdf.save("document.pdf");
+  // };
+  const downloadPDF = (text, lang) => {
     const pdf = new jsPDF();
-    const pageHeight = pdf.internal.pageSize.height;
+
+    const margin = 10;
     const lineHeight = 10;
-    const margin = 20;
-    const lines = pdf.splitTextToSize(generatedDoc, 170);
+    const pageHeight = pdf.internal.pageSize.height;
     let y = margin;
-    lines.forEach((line) => {
+
+    if (lang === "hi") {
+      pdf.setFont("NotoSansDevanagari-Regular");  
+    } else if (lang === "gu") {
+      pdf.setFont("NotoSansGujarati-Regular");  
+    } else {
+      // English - use default font
+      pdf.setFont("helvetica"); // default jsPDF font
+    }
+
+    pdf.setFontSize(12);
+    const lines = pdf.splitTextToSize(text, 180);
+
+    lines.forEach(line => {
       if (y + lineHeight > pageHeight - margin) {
         pdf.addPage();
         y = margin;
@@ -228,8 +263,21 @@ function App() {
       pdf.text(line, margin, y);
       y += lineHeight;
     });
+
     pdf.save("document.pdf");
   };
+
+
+  const detectLang = (text) => {
+    if (/[\u0A80-\u0AFF]/.test(text)) return "gu";  // Gujarati Unicode
+    if (/[\u0900-\u097F]/.test(text)) return "hi";  // Hindi/Devanagari Unicode
+    return "en";
+  };
+
+  // const inputText = getTextFromUser();
+  // const lang = detectLang(inputText);
+
+
 
   /* ── NavButtons component (reused in nav + drawer) ───────────────── */
   const NavButtons = ({ closeDrawer }) => (
@@ -274,16 +322,16 @@ function App() {
             </button>
           )}
 
-{user.role === "client" && (
-  <button
-    style={getNavBtnStyle("lawyer_chat")}
-    onClick={() => setPage("lawyer_chat")}
-    onMouseEnter={() => setHoveredBtn("lawyer_chat")}
-    onMouseLeave={() => setHoveredBtn(null)}
-  >
-    Chat with Lawyer
-  </button>
-)}
+          {user.role === "client" && (
+            <button
+              style={getNavBtnStyle("lawyer_chat")}
+              onClick={() => setPage("lawyer_chat")}
+              onMouseEnter={() => setHoveredBtn("lawyer_chat")}
+              onMouseLeave={() => setHoveredBtn(null)}
+            >
+              Chat with Lawyer
+            </button>
+          )}
 
 
           <button
@@ -438,7 +486,7 @@ function App() {
 
           {page === "assign_client" && user?.role === "admin" && <AssignClient />}
 
-{page === "lawyer_chat" && user.role === "client" && <MyLawyerChat />}
+          {page === "lawyer_chat" && user.role === "client" && <MyLawyerChat />}
 
           {/* -------------- Generate Docs -------------- */}
           {page === "generate" && (
@@ -574,7 +622,10 @@ function App() {
                   <button onClick={handleSave} style={styles.button}>
                     Save Document
                   </button>
-                  <button onClick={downloadPDF} style={styles.button}>
+                  <button onClick={() => {
+                    const lang = detectLang(generatedDoc);
+                    downloadPDF(generatedDoc, lang);
+                  }} style={styles.button}>
                     Download PDF
                   </button>
                   {loading && <Loader />}
