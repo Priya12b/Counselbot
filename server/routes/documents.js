@@ -5,6 +5,7 @@ const db = require('../db/connection');
 // const auth = require("../middleware/auth");
 const mammoth = require("mammoth");
 const { authMiddleware } = require("../middleware/auth");
+const mime = require("mime-types");
 
 
 
@@ -113,7 +114,6 @@ router.get("/", authMiddleware, async (req, res) => {
 });
 
 
-
 // ✅ 5. Generate with template (private)
 
 router.post("/generate-from-template", authMiddleware, async (req, res) => {
@@ -124,9 +124,23 @@ router.post("/generate-from-template", authMiddleware, async (req, res) => {
 
   try {
     const fullPath = path.join(__dirname, "..", templatePath.replace(/^\/+/, ""));
+    const ext = path.extname(fullPath).toLowerCase();
 
-    const result = await mammoth.extractRawText({ path: fullPath });
-    const templateText = result.value;
+    let templateText;
+
+    if (ext === ".docx") {
+      const result = await mammoth.extractRawText({ path: fullPath });
+      templateText = result.value;
+    } else if (ext === ".txt") {
+      templateText = fs.readFileSync(fullPath, "utf-8");
+    } else if (ext === ".pdf") {
+      const dataBuffer = fs.readFileSync(fullPath);
+      const pdfParse = require("pdf-parse");
+      const data = await pdfParse(dataBuffer);
+      templateText = data.text;
+    } else {
+      return res.status(400).json({ success: false, message: "Unsupported file format" });
+    }
 
     const today = new Date().toLocaleDateString("en-IN", {
       day: "2-digit",

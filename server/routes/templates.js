@@ -24,7 +24,7 @@ const upload = multer({ storage });
 // 👇 Route to upload template
 router.post("/upload", authMiddleware, upload.single("template"), (req, res) => {
   console.log("Upload route hit");
-  console.log("File info:", req.file);
+  // console.log("File info:", req.file);
   if (!req.file) return res.status(400).json({ message: "No file uploaded" });
 
   res.json({
