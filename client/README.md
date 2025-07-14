@@ -59,6 +59,14 @@
 - Clients are fully isolated
 
 ---
+
+### 📩 **Smart Auto-Invite System**
+- When a lawyer or admin **adds a client**, the system **automatically sends a personalized email invite**.
+- Email includes a **secure registration link** 
+- The registration form is **pre-filled with the client's name and email**, so they can sign up in seconds.
+- Lawyers don’t need to follow up — it’s plug-n-play client onboarding!
+
+---
 ### 💬** Real-Time Chat Enhancements (Lawyer ↔ Client)**
 - Two-way chat between lawyer and client
 - Share case related files to each other 

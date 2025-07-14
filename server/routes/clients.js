@@ -4,28 +4,88 @@ const db = require("../db/connection");
 const { authMiddleware, requireRole } = require("../middleware/auth");
 
 // ✅ Add client
-router.post("/add", authMiddleware, requireRole("admin", "lawyer"), (req, res) => {
+const nodemailer = require("nodemailer");
+const { v4: uuidv4 } = require("uuid");
 
+router.post("/add", authMiddleware, requireRole("admin", "lawyer"), async (req, res) => {
   const { name, email, phone } = req.body;
   const { id: userId, firm_id, role } = req.user;
 
+  // 1. Insert the client
   db.query(
-    "INSERT INTO clients (user_id, name, email, phone, firm_id, added_by_user_id) VALUES (?, ?, ?, ?, ?, ? )",
+    "INSERT INTO clients (user_id, name, email, phone, firm_id, added_by_user_id) VALUES (?, ?, ?, ?, ?, ?)",
     [userId, name, email, phone, firm_id, userId],
-    (err, result) => {
+    async (err, result) => {
       if (err) return res.status(500).json({ message: "DB error", error: err });
-      // 🔗 if the creator is a lawyer, auto‑assign the client to them
+
+      const clientId = result.insertId;
+
+      // 2. Auto-assign if lawyer
       if (role === "lawyer") {
         db.query(
-          "INSERT INTO client_assignments (client_id, lawyer_id) VALUES (?, ?)",
-          [result.insertId, userId]
+          "SELECT 1 FROM client_assignments WHERE client_id = ? AND lawyer_id = ?",
+          [clientId, userId],
+          (err, rows) => {
+            if (err) console.error("Assignment check failed", err);
+            else if (!rows.length) {
+              db.query(
+                "INSERT INTO client_assignments (client_id, lawyer_id) VALUES (?, ?)",
+                [clientId, userId],
+                (e2) => {
+                  if (e2) console.error("Assigning client to lawyer failed", e2);
+                }
+              );
+            }
+          }
         );
       }
-      res.json({ success: true, clientId: result.insertId });
 
+
+      // 3. Generate invite token
+      const token = uuidv4();
+
+      // 4. Store token somewhere – maybe in a new table?
+      db.query("INSERT INTO client_invites (client_id, token) VALUES (?, ?)", [clientId, token]);
+
+      // 5. Send email invite
+      try {
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
+          }
+        });
+
+        const inviteLink = `http://localhost:3000//register?invite=${token}`;
+
+        await transporter.sendMail({
+          from: `"CounselBot" <${process.env.EMAIL_USER}>`,
+          to: email,
+          subject: "You've been invited to join CounselBot",
+          html: `
+            <p>Hi <b>${name}</b>,</p>
+           <p>
+  ${req.user.role === "admin"
+              ? `Admin <b>${req.user.name}</b>`
+              : `Lawyer <b>${req.user.name}</b>`
+            } has invited you to join <b>CounselBot</b>.
+</p>
+
+            <p>Click the link below to register and get started:</p>
+            <a href="${inviteLink}">${inviteLink}</a>
+          `
+        });
+
+        return res.json({ success: true, clientId });
+      } catch (e) {
+        console.error("Email send error:", e);
+        return res.status(500).json({ error: "Client added, but invite email failed." });
+      }
     }
   );
 });
+
 
 
 // 🔸 helper: returns a promise that resolves true/false
@@ -132,7 +192,7 @@ router.post("/assign", authMiddleware, requireRole("admin"), (req, res) => {
     (err, cRows) => {
       if (err) return res.status(500).json({ message: "DB error", err });
       if (!cRows.length) return res.status(400).json({ error: "Client not in your firm" });
-      
+
       db.query(
         `SELECT 1 FROM users WHERE id = ? AND role = 'lawyer' AND firm_id = ?`,
         [lawyer_id, firm_id],

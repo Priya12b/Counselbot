@@ -169,8 +169,8 @@
 
 // routes/chat.js  🔄 Gemini-native version
 const express = require("express");
-const router  = express.Router();
-const db      = require("../db/connection");
+const router = express.Router();
+const db = require("../db/connection");
 // const auth    = require("../middleware/auth");
 const { authMiddleware } = require("../middleware/auth");
 
@@ -179,7 +179,7 @@ const { chatWithGemini } = require("../services/geminiChat");
 
 /* ─────────────────────────  POST /api/chat  ───────────────────────── */
 router.post("/", authMiddleware, async (req, res) => {
-  const userId                          = req.user.id;
+  const userId = req.user.id;
   const { message, history = [], sessionId = null, clientId = null } = req.body;
 
   try {
@@ -194,24 +194,65 @@ router.post("/", authMiddleware, async (req, res) => {
     }
 
     /* 2️⃣  Build dynamic context (clients / notes / docs) */
-    const [clients] = await db.promise().query(
-      "SELECT * FROM clients WHERE user_id = ?",
-      [userId]
-    );
-    const [notes]   = await db.promise().query(
-      `SELECT n.*, c.name AS client_name
-         FROM notes n
-         JOIN clients c ON n.client_id = c.id
-        WHERE c.user_id = ?`,
-      [userId]
-    );
-    const [docs]    = await db.promise().query(
-      `SELECT d.*, c.name AS client_name
-         FROM documents d
-         JOIN clients  c ON d.client_id = c.id
-        WHERE d.user_id = ?`,
-      [userId]
-    );
+    const userRole = req.user.role;
+
+    let clients = [];
+    if (userRole === "admin") {
+      // Admin: all clients in their firm
+      [clients] = await db.promise().query(
+        `SELECT * FROM clients
+      WHERE firm_id = (SELECT firm_id FROM users WHERE id = ?)`,
+        [userId]
+      );
+    } else if (userRole === "lawyer") {
+      // Lawyer: own + assigned clients
+      [clients] = await db.promise().query(
+        `SELECT * FROM clients
+      WHERE user_id = ?
+         OR id IN (
+           SELECT client_id FROM client_assignments
+            WHERE lawyer_id = ?
+         )`,
+        [userId, userId]
+      );
+    } else if (userRole === "client") {
+      // Client: only self (assuming clients table stores user_id)
+      [clients] = await db.promise().query(
+        `SELECT * FROM clients WHERE user_id = ?`,
+        [userId]
+      );
+    }
+
+    // Get client IDs
+    const clientIds = clients.map(c => c.id);
+    if (clientIds.length === 0) {
+      console.log("No clients found for this user");
+    }
+
+    // Get notes
+    let notes = [];
+    if (clientIds.length > 0) {
+      [notes] = await db.promise().query(
+        `SELECT n.*, c.name AS client_name
+       FROM notes n
+       JOIN clients c ON n.client_id = c.id
+      WHERE n.client_id IN (?)`,
+        [clientIds]
+      );
+    }
+
+    // Get documents
+    let docs = [];
+    if (clientIds.length > 0) {
+      [docs] = await db.promise().query(
+        `SELECT d.*, c.name AS client_name
+       FROM documents d
+       JOIN clients c ON d.client_id = c.id
+      WHERE d.client_id IN (?)`,
+        [clientIds]
+      );
+    }
+
 
     let context =
       "You are a helpful Indian legal assistant AI that remembers the conversation and Do continue Chat. " +
@@ -220,25 +261,19 @@ router.post("/", authMiddleware, async (req, res) => {
 
     if (["client", "note", "document"].some(k => message.toLowerCase().includes(k))) {
       context +=
-        `Clients:\n${clients.map(c => `- ${c.name} (${c.email})`).join("\n")}\n` +
+        `Clients:\n${clients.map(c => `- ${c.name} | ${c.email} | ${c.phone}`).join("\n")}\n` +
         `Notes:\n${notes.map(n => `- [${n.client_name}] ${n.note_text}`).join("\n")}\n` +
-        `Docs:\n${docs.map(d => `- [${d.client_name}] ${d.doc_type}`).join("\n")}\n`;
+        `Docs:\n${docs.map(d => `- [${d.client_name}] ${d.doc_type} | ${d.content}`).join("\n")}\n`;
     }
 
-    /* 3️⃣  Assemble chat history for Gemini */
-//     const messages = [
-//   // we will skip "system" role for Gemini
-//   ...history.map(m => ({ role: m.from === "user" ? "user" : "assistant", content: m.text })),
-//   { role: "user", content: `${context}\n\n${message}` } // add context to current user input
-// ];
-const messages = [
-  { role: "user", content: context },  // inject context as first user message
-  ...history.map(m => ({
-    role: m.from === "user" ? "user" : "assistant",
-    content: m.text
-  })),
-  { role: "user", content: message }  // keep actual input clean
-];
+    const messages = [
+      { role: "user", content: context },  // inject context as first user message
+      ...history.map(m => ({
+        role: m.from === "user" ? "user" : "assistant",
+        content: m.text
+      })),
+      { role: "user", content: message }  // keep actual input clean
+    ];
 
 
     /* 4️⃣  Call Gemini */
@@ -294,8 +329,8 @@ router.delete("/sessions/:id", authMiddleware, async (req, res) => {
 
 /* ───────────────  PUT /api/chat/sessions/:id/pin  ─────────────── */
 router.put("/sessions/:id/pin", authMiddleware, async (req, res) => {
-  const sessionId         = req.params.id;
-  const { is_pinned }     = req.body;
+  const sessionId = req.params.id;
+  const { is_pinned } = req.body;
   try {
     await db.promise().query(
       "UPDATE chat_sessions SET is_pinned = ? WHERE id = ?",
@@ -331,7 +366,7 @@ router.put("/sessions/:id/rename", authMiddleware, async (req, res) => {
 /* ───────  GET /api/chat/sessions/:id  (return messages)  ─────── */
 router.get("/sessions/:id", authMiddleware, async (req, res) => {
   const sessionId = req.params.id;
-  const userId    = req.user.id;
+  const userId = req.user.id;
 
   const [[session]] = await db.promise().query(
     "SELECT id FROM chat_sessions WHERE id = ? AND user_id = ?",
