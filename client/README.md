@@ -97,6 +97,8 @@
 - Chat-to-Document feature 📝
 - Voice input 🎙️
 - Multilingual Input (Hindi, Gujarati, English)
+- 📎File Upload + AI-powered Analysis in Chat
+
 
 📌 **Chat History**
 - Save multiple chats with titles

@@ -180,7 +180,7 @@ const { chatWithGemini } = require("../services/geminiChat");
 /* ─────────────────────────  POST /api/chat  ───────────────────────── */
 router.post("/", authMiddleware, async (req, res) => {
   const userId = req.user.id;
-  const { message, history = [], sessionId = null, clientId = null } = req.body;
+  const { message, history = [], sessionId = null, clientId = null, fileText = null } = req.body;
 
   try {
     /* 1️⃣  Create a new session if needed */
@@ -259,6 +259,10 @@ router.post("/", authMiddleware, async (req, res) => {
       "After each answer ask the user if they need information for a specific country, IPC section, or landmark case. " +
       "If their query resembles a known case, mention that precedent.\n\n";
 
+    if (fileText) {
+      context += `File Content:\n${fileText}\n\n`;
+    }
+
     if (["client", "note", "document"].some(k => message.toLowerCase().includes(k))) {
       context +=
         `Clients:\n${clients.map(c => `- ${c.name} | ${c.email} | ${c.phone}`).join("\n")}\n` +
@@ -292,6 +296,48 @@ router.post("/", authMiddleware, async (req, res) => {
     res.status(500).json({ message: "Chatbot error", error: err.message });
   }
 });
+
+
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+const pdfParse = require("pdf-parse");
+const mammoth = require("mammoth");
+
+const upload = multer({ dest: "uploads/" });
+
+router.post("/upload", authMiddleware, upload.single("file"), async (req, res) => {
+  const file = req.file;
+
+  if (!file) return res.status(400).json({ message: "No file uploaded" });
+
+  const ext = path.extname(file.originalname).toLowerCase();
+  let text = "";
+
+  try {
+    if (ext === ".pdf") {
+      const data = fs.readFileSync(file.path);
+      const pdfData = await pdfParse(data);
+      text = pdfData.text;
+    } else if (ext === ".docx") {
+      const result = await mammoth.extractRawText({ path: file.path });
+      text = result.value;
+    } else if (ext === ".txt") {
+      text = fs.readFileSync(file.path, "utf8");
+    } else {
+      return res.status(400).json({ message: "Unsupported file type" });
+    }
+
+    // Clean up uploaded file after extraction
+    fs.unlinkSync(file.path);
+
+    res.json({ text });
+  } catch (err) {
+    console.error("File processing error:", err);
+    res.status(500).json({ message: "Failed to read file" });
+  }
+});
+
 
 /* ─────────────────────  GET /api/chat/sessions  ───────────────────── */
 router.get("/sessions", authMiddleware, async (req, res) => {

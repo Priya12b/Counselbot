@@ -78,6 +78,46 @@ function Chatbot() {
     toast.success(" Saved as document!");
   };
 
+  const [uploadedFileText, setUploadedFileText] = useState("");
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const token = localStorage.getItem("token");
+
+    try {
+      const res = await axios.post("http://localhost:5000/api/chat/upload", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      // 1. Show file name as a "user message"
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "user",
+          text: `📎 Uploaded: ${file.name}`,
+        },
+      ]);
+
+      // 2. Store file content in memory, not in chat
+      setUploadedFileText(res.data.text);
+      toast.success(`📁 ${file.name} uploaded`);
+    } catch (err) {
+      console.error(err);
+      toast.error("File upload failed.");
+    }
+  };
+
+
+
+
   const deleteChat = async (id) => {
     if (!window.confirm("Are you sure you want to delete this chat?")) return;
 
@@ -104,6 +144,52 @@ function Chatbot() {
     setLastMessage(null);
   };
 
+  //   const sendMessage = async (msg = input) => {
+  //     if (!msg?.trim()) return;
+
+  //     const userMsg = { role: "user", text: msg };
+  //     setMessages((prev) => [...prev, userMsg]);
+  //     setLastMessage(msg);
+  //     setInput("");
+  //     setLoading(true);          // 🔄 start spinner
+
+  //     try{
+  //     const token = localStorage.getItem("token");
+  //     const res = await axios.post(
+  //       "http://localhost:5000/api/chat",
+  //       {
+  //         message: msg,
+  //         history: messages.map((m) => ({ from: m.role, text: m.text })),
+  //         sessionId,
+  //       },
+  //       {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       }
+  //     );
+
+  //     const botMsg = { role: "bot", text: res.data.response };
+  //     setMessages((prev) => [...prev, botMsg]);
+
+  //     if (!sessionId && res.data.sessionId) {
+  //       setSessionId(res.data.sessionId);
+  //       setSessions((prev) => [
+  //         {
+  //           id: res.data.sessionId,
+  //           title: msg.slice(0, 30) || "Untitled Chat",
+  //           created_at: new Date().toISOString(),
+  //           client_name: null,
+  //           is_pinned: false,
+  //         },
+  //         ...prev,
+  //       ]);
+  //     }
+  //    } catch (err) {
+  //     console.error(err);
+  //     toast.error("😬 Something blew up, try again.");
+  //   } finally {
+  //     setLoading(false);       // 🛑 stop spinner
+  //   }
+  // };
   const sendMessage = async (msg = input) => {
     if (!msg?.trim()) return;
 
@@ -111,45 +197,48 @@ function Chatbot() {
     setMessages((prev) => [...prev, userMsg]);
     setLastMessage(msg);
     setInput("");
-    setLoading(true);          // 🔄 start spinner
+    setLoading(true);
 
-    try{
-    const token = localStorage.getItem("token");
-    const res = await axios.post(
-      "http://localhost:5000/api/chat",
-      {
-        message: msg,
-        history: messages.map((m) => ({ from: m.role, text: m.text })),
-        sessionId,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+    try {
+      const token = localStorage.getItem("token");
 
-    const botMsg = { role: "bot", text: res.data.response };
-    setMessages((prev) => [...prev, botMsg]);
-
-    if (!sessionId && res.data.sessionId) {
-      setSessionId(res.data.sessionId);
-      setSessions((prev) => [
+      const res = await axios.post(
+        "http://localhost:5000/api/chat",
         {
-          id: res.data.sessionId,
-          title: msg.slice(0, 30) || "Untitled Chat",
-          created_at: new Date().toISOString(),
-          client_name: null,
-          is_pinned: false,
+          message: msg,
+          history: messages.map((m) => ({ from: m.role, text: m.text })),
+          sessionId,
+          fileText: uploadedFileText  // 🧠 send file context to backend
         },
-        ...prev,
-      ]);
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const botMsg = { role: "bot", text: res.data.response };
+      setMessages((prev) => [...prev, botMsg]);
+
+      if (!sessionId && res.data.sessionId) {
+        setSessionId(res.data.sessionId);
+        setSessions((prev) => [
+          {
+            id: res.data.sessionId,
+            title: msg.slice(0, 30) || "Untitled Chat",
+            created_at: new Date().toISOString(),
+            client_name: null,
+            is_pinned: false,
+          },
+          ...prev,
+        ]);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("😬 Something went wrong.");
+    } finally {
+      setLoading(false);
     }
-   } catch (err) {
-    console.error(err);
-    toast.error("😬 Something blew up, try again.");
-  } finally {
-    setLoading(false);       // 🛑 stop spinner
-  }
-};
+  };
+
 
   const loadSessions = async () => {
     const token = localStorage.getItem("token");
@@ -329,7 +418,7 @@ function Chatbot() {
       padding: "1.5rem",
       boxSizing: "border-box",   // include padding in height calc
       paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))",
-       position: "relative",  
+      position: "relative",
     },
 
     /* 2️⃣  CHAT BOX — flex-grow so it takes *only* leftover space */
@@ -430,6 +519,16 @@ function Chatbot() {
       padding: "6px 0",
       width: 140
     },
+
+    clipBtn: {
+      fontSize: "1.4rem",
+      cursor: "pointer",
+      marginRight: "0.5rem",
+      color: "#555",
+      userSelect: "none",
+    },
+
+
     menuItem: {
       display: "flex",
       alignItems: "center",
@@ -443,39 +542,39 @@ function Chatbot() {
     },
 
     loaderOverlay: {
-  position: "absolute",
-  top: 0,
-  left: 0,
-  width: "100%",
-  height: "100%",
-  background: "rgba(255,255,255,0.7)",
-  backdropFilter: "blur(1.5px)",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  borderRadius: "8px",   // matches chat box corners
-  zIndex: 10,
-},
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      background: "rgba(255,255,255,0.7)",
+      backdropFilter: "blur(1.5px)",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: "8px",   // matches chat box corners
+      zIndex: 10,
+    },
 
-spinner: {
-  width: 32,
-  height: 32,
-  border: "4px solid #3498db",
-  borderTopColor: "transparent",
-  borderRadius: "50%",
-  animation: "spin 0.7s linear infinite",
-},
+    spinner: {
+      width: 32,
+      height: 32,
+      border: "4px solid #3498db",
+      borderTopColor: "transparent",
+      borderRadius: "50%",
+      animation: "spin 0.7s linear infinite",
+    },
 
 
   };
 
   const Loader = () => (
-  <div style={styles.loaderOverlay}>
-    <div style={styles.spinner} />
-    <span style={{ marginTop: 8 }}>Thinking…</span>
-  </div>
-);
+    <div style={styles.loaderOverlay}>
+      <div style={styles.spinner} />
+      <span style={{ marginTop: 8 }}>Thinking…</span>
+    </div>
+  );
 
 
   return (
@@ -535,16 +634,20 @@ spinner: {
         <div style={styles.chatBox}>
           {messages.map((msg, index) => (
             <div key={index} style={styles.messageBubble(msg.role === "user")}>
-              {/* <div style={styles.bubbleContent(msg.role === "user")}>
-                <strong>{msg.role === "user" ? "You" : "Bot"}:</strong>{" "}
-                {msg.text}
-              </div> */}
               <div style={styles.bubbleContent(msg.role === "user")}>
                 <strong>{msg.role === "user" ? "You" : "Bot"}:</strong>{" "}
                 {msg.role === "bot" ? (
                   <ReactMarkdown>{msg.text}</ReactMarkdown>
                 ) : (
-                  msg.text
+                  msg.text.startsWith("📎 Uploaded:") ? (
+                    <span>
+                      <span role="img" aria-label="paperclip">📎</span>{" "}
+                      {msg.text.replace("📎 Uploaded:", "").trim()}
+                    </span>
+                  ) : (
+                    msg.text
+                  )
+
                 )}
               </div>
 
@@ -557,6 +660,19 @@ spinner: {
 
         {/* Input row */}
         <div style={styles.inputArea}>
+          {/* 📎 file button */}
+          <label htmlFor="file-upload" style={styles.clipBtn}>
+            📎
+          </label>
+          <input
+            id="file-upload"
+            type="file"
+            accept=".txt,.pdf,.doc,.docx"
+            onChange={handleFileUpload}
+            style={{ display: "none" }}
+          />
+
+          {/* text input */}
           <input
             type="text"
             value={input}
@@ -565,10 +681,12 @@ spinner: {
             onKeyDown={(e) => e.key === "Enter" && sendMessage()}
             style={styles.input}
           />
+
           {/* 🔊 VOICE BTN */}
           <button onClick={handleMicClick} style={styles.micBtn}>
             {isListening ? "⏹️" : "🎤"}
           </button>
+          {/* send button */}
           <button onClick={() => sendMessage(input)} style={styles.button}>
             Send
           </button>
