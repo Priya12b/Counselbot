@@ -9,9 +9,14 @@ const db = mysql.createPool({
   port: process.env.DB_PORT
 });
 
-db.connect((err) => {
-  if (err) throw err;
-  console.log('✅ Connected to MySQL DB!');
+db.getConnection((err, connection) => {
+  if (err) {
+    console.error('❌ DB connection failed:', err.message);
+  } else {
+    console.log('✅ MySQL pool connected!');
+    connection.release();
+  }
 });
+
 
 module.exports = db;
