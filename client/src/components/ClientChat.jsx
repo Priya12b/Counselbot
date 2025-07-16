@@ -268,19 +268,6 @@ function ClientChat({ selectedClient }) {
       .catch((err) => console.error("Chat fetch error", err));
   }, [selectedClient]);
 
-  // 💬 polling every 3s
-  useEffect(() => {
-    if (!convId) return;
-    const interval = setInterval(() => {
-      axios
-        .get(`${process.env.REACT_APP_API_URL}/api/lc/messages/${convId}`, authHeader)
-        .then((res) => setMessages(res.data))
-        .catch((err) => console.error("Polling error", err));
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [convId]);
-
-
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -298,15 +285,15 @@ function ClientChat({ selectedClient }) {
       );
       if (!convId) setConvId(res.data.conversation_id);
 
-      // setMessages((prev) => [
-      //   ...prev,
-      //   {
-      //     sender_type: "lawyer",
-      //     sender_user_id: user.id,
-      //     text: input,
-      //     sent_at: new Date(),
-      //   },
-      // ]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender_type: "lawyer",
+          sender_user_id: user.id,
+          text: input,
+          sent_at: new Date(),
+        },
+      ]);
       setInput("");
       setShowEmoji(false);
     } catch (err) {
@@ -338,16 +325,16 @@ function ClientChat({ selectedClient }) {
           },
         }
       );
-      // if (res.data.success) {
-      //   setMessages((prev) => [
-      //     ...prev,
-      //     {
-      //       sender_type: "lawyer",
-      //       text: res.data.file, // "/chat_files/..."
-      //       sent_at: new Date(),
-      //     },
-      //   ]);
-      // }
+      if (res.data.success) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            sender_type: "lawyer",
+            text: res.data.file, // "/chat_files/..."
+            sent_at: new Date(),
+          },
+        ]);
+      }
     } catch (err) {
       console.error("File upload error", err.response?.data || err);
     } finally {
@@ -556,6 +543,3 @@ function ClientChat({ selectedClient }) {
 }
 
 export default ClientChat;
-
-
-

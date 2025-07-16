@@ -26,33 +26,21 @@ export default function MyLawyerChat() {
   };
 
   /* ── fetch conversation + messages on mount ─────────────────────── */
-  // inside MyLawyerChat.jsx
-useEffect(() => {
-  if (!convo?.id) return;
-  const interval = setInterval(() => {
+  useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/api/lc/messages/${convo.id}`, authHeader)
-      .then((res) => setMessages(res.data))
-      .catch((err) => console.error("Polling error", err));
-  }, 3000);
-  return () => clearInterval(interval);
-}, [convo]);
-
-  // useEffect(() => {
-  //   axios
-  //     .get(`${process.env.REACT_APP_API_URL}/api/lc/conversations`, authHeader)
-  //     .then((res) => {
-  //       if (res.data.length) {
-  //         setConvo(res.data[0]);
-  //         return axios.get(
-  //           `${process.env.REACT_APP_API_URL}/api/lc/messages/${res.data[0].id}`,
-  //           authHeader
-  //         );
-  //       }
-  //     })
-  //     .then((r) => r && setMessages(r.data))
-  //     .catch((err) => console.error(err));
-  // }, []);
+      .get(`${process.env.REACT_APP_API_URL}/api/lc/conversations`, authHeader)
+      .then((res) => {
+        if (res.data.length) {
+          setConvo(res.data[0]);
+          return axios.get(
+            `${process.env.REACT_APP_API_URL}/api/lc/messages/${res.data[0].id}`,
+            authHeader
+          );
+        }
+      })
+      .then((r) => r && setMessages(r.data))
+      .catch((err) => console.error(err));
+  }, []);
 
   /* autoscroll */
   useEffect(() => {
