@@ -17,7 +17,7 @@ function SavedDocs() {
     const fetchDocs = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5000/api/documents/", {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/documents/`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -37,7 +37,7 @@ function SavedDocs() {
     const token = localStorage.getItem("token");
     try {
       await axios.delete(
-        `http://localhost:5000/api/documents/${docId}`,
+        `${process.env.REACT_APP_API_URL}/api/documents/${docId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 

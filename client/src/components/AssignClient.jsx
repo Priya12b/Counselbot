@@ -13,11 +13,11 @@
 //     const token = localStorage.getItem("token");
 //     const headers = { Authorization: `Bearer ${token}` };
 
-//     axios.get("http://localhost:5000/api/users/lawyers", { headers })
+//     axios.get("${process.env.REACT_APP_API_URL}/api/users/lawyers", { headers })
 //       .then(res => setLawyers(res.data))
 //       .catch(() => toast.error("Failed to load lawyers"));
 
-//     axios.get("http://localhost:5000/api/clients/my", { headers })
+//     axios.get("${process.env.REACT_APP_API_URL}/api/clients/my", { headers })
 //       .then(res => setClients(res.data))
 //       .catch(() => toast.error("Failed to load clients"));
 //   }, []);
@@ -27,7 +27,7 @@
 //     if (!lawyerId || !clientId) return toast.error("Pick both client & lawyer");
 //     const token = localStorage.getItem("token");
 //     axios.post(
-//       "http://localhost:5000/api/clients/assign",
+//       "${process.env.REACT_APP_API_URL}/api/clients/assign",
 //       { client_id: clientId, lawyer_id: lawyerId },
 //       { headers: { Authorization: `Bearer ${token}` } }
 //     )
@@ -108,12 +108,12 @@ export default function AssignClient() {
     const headers = { Authorization: `Bearer ${token}` };
 
     axios
-      .get("http://localhost:5000/api/users/lawyers", { headers })
+      .get(`${process.env.REACT_APP_API_URL}/api/users/lawyers`, { headers })
       .then((res) => setLawyers(res.data))
       .catch(() => toast.error("Failed to load lawyers"));
 
     axios
-      .get("http://localhost:5000/api/clients/my", { headers })
+      .get(`${process.env.REACT_APP_API_URL}/api/clients/my`, { headers })
       .then((res) => setClients(res.data))
       .catch(() => toast.error("Failed to load clients"));
   }, []);
@@ -124,7 +124,7 @@ export default function AssignClient() {
     const token = localStorage.getItem("token");
     axios
       .post(
-        "http://localhost:5000/api/clients/assign",
+        `${process.env.REACT_APP_API_URL}/api/clients/assign`,
         { client_id: clientId, lawyer_id: lawyerId },
         { headers: { Authorization: `Bearer ${token}` } }
       )

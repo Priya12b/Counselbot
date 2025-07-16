@@ -11,7 +11,7 @@ export default function TemplateUploader({ onUploadSuccess }) {
     const fd = new FormData();
     fd.append("template", file);
     try {
-      const { data } = await axios.post("http://localhost:5000/api/templates/upload", fd, {
+      const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/templates/upload`, fd, {
         headers: { Authorization: `Bearer ${token}` },
       });
       onUploadSuccess(data.path);  // pass back /uploads/<file>

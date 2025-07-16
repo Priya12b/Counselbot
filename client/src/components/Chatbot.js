@@ -70,7 +70,7 @@ function Chatbot() {
     if (!docType) return;
 
     await axios.post(
-      "http://localhost:5000/api/documents/save-from-chat",
+      `${process.env.REACT_APP_API_URL}/api/documents/save-from-chat`,
       { docType, content: text },
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -90,7 +90,7 @@ function Chatbot() {
     const token = localStorage.getItem("token");
 
     try {
-      const res = await axios.post("http://localhost:5000/api/chat/upload", formData, {
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/chat/upload`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -123,7 +123,7 @@ function Chatbot() {
 
     const token = localStorage.getItem("token");
     try {
-      await axios.delete(`http://localhost:5000/api/chat/sessions/${id}`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/chat/sessions/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("🗑️ Chat deleted");
@@ -156,7 +156,7 @@ function Chatbot() {
   //     try{
   //     const token = localStorage.getItem("token");
   //     const res = await axios.post(
-  //       "http://localhost:5000/api/chat",
+  //       "${process.env.REACT_APP_API_URL}/api/chat",
   //       {
   //         message: msg,
   //         history: messages.map((m) => ({ from: m.role, text: m.text })),
@@ -203,7 +203,7 @@ function Chatbot() {
       const token = localStorage.getItem("token");
 
       const res = await axios.post(
-        "http://localhost:5000/api/chat",
+        `${process.env.REACT_APP_API_URL}/api/chat`,
         {
           message: msg,
           history: messages.map((m) => ({ from: m.role, text: m.text })),
@@ -242,7 +242,7 @@ function Chatbot() {
 
   const loadSessions = async () => {
     const token = localStorage.getItem("token");
-    const res = await axios.get("http://localhost:5000/api/chat/sessions", {
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/chat/sessions`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     setSessions(res.data);
@@ -251,7 +251,7 @@ function Chatbot() {
   const loadSession = async (id) => {
     const token = localStorage.getItem("token");
     const res = await axios.get(
-      `http://localhost:5000/api/chat/sessions/${id}`,
+      `${process.env.REACT_APP_API_URL}/api/chat/sessions/${id}`,
       {
         headers: { Authorization: `Bearer ${token}` },
       }
@@ -281,7 +281,7 @@ function Chatbot() {
 
     const token = localStorage.getItem("token");
     await axios.put(
-      `http://localhost:5000/api/chat/sessions/${id}/rename`,
+      `${process.env.REACT_APP_API_URL}/api/chat/sessions/${id}/rename`,
       { newTitle },
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -295,7 +295,7 @@ function Chatbot() {
     const token = localStorage.getItem("token");
 
     const { data } = await axios.put(
-      `http://localhost:5000/api/chat/sessions/${id}/pin`,
+      `${process.env.REACT_APP_API_URL}/api/chat/sessions/${id}/pin`,
       { is_pinned: !currentStatus },
       { headers: { Authorization: `Bearer ${token}` } }
     );

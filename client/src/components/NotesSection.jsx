@@ -14,7 +14,7 @@ function NotesSection({ clientId }) {
 
   const fetchNotes = async () => {
     const token = localStorage.getItem("token");
-    const res = await axios.get(`http://localhost:5000/api/notes/byClient/${clientId}`, {
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/notes/byClient/${clientId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     setNotes(res.data);
@@ -22,7 +22,7 @@ function NotesSection({ clientId }) {
 
   const fetchClientInfo = async () => {
     const token = localStorage.getItem("token");
-    const res = await axios.get(`http://localhost:5000/api/clients/my`, {
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/clients/my`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     const client = res.data.find((c) => c.id === clientId);
@@ -39,14 +39,14 @@ function NotesSection({ clientId }) {
 
     if (editingNoteId) {
       await axios.put(
-        `http://localhost:5000/api/notes/edit/${editingNoteId}`,
+        `${process.env.REACT_APP_API_URL}/api/notes/edit/${editingNoteId}`,
         { note_text: note },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setEditingNoteId(null);
     } else {
       await axios.post(
-        "http://localhost:5000/api/notes/add",
+        `${process.env.REACT_APP_API_URL}/api/notes/add`,
         { client_id: clientId, note_text: note },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -64,7 +64,7 @@ function NotesSection({ clientId }) {
   const deleteNote = async (id) => {
     if (!window.confirm("Delete this note?")) return;
     const token = localStorage.getItem("token");
-    await axios.delete(`http://localhost:5000/api/notes/delete/${id}`, {
+    await axios.delete(`${process.env.REACT_APP_API_URL}/api/notes/delete/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     fetchNotes();
@@ -88,12 +88,12 @@ function NotesSection({ clientId }) {
       You are a legal document drafting assistant. Output should be in professional plain text — no markdown (*, **, #, etc.).
       Use clean spacing, uppercase for headers, and legal formatting.`;
 
-    const res = await axios.post("http://localhost:5000/api/generate", { content });
+    const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/generate`, { content });
 
     setDoc(res.data.text);
 
     await axios.post(
-      "http://localhost:5000/api/documents/save",
+      `${process.env.REACT_APP_API_URL}/api/documents/save`,
       {
         client_id: clientId,
         doc_type: "Custom Document",
@@ -110,7 +110,7 @@ function NotesSection({ clientId }) {
     const token = localStorage.getItem("token");
 
     const response = await axios.post(
-      "http://localhost:5000/api/documents/save",
+      `${process.env.REACT_APP_API_URL}/api/documents/save`,
       {
         client_id: clientId,
         doc_type: "Custom Document",

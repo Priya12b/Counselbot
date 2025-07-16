@@ -10,10 +10,10 @@ function FileUploader({ clientId = null }) {
   const fetchFiles = async () => {
     try {
       const res = clientId
-        ? await axios.get(`http://localhost:5000/api/files/byClient/${clientId}`, {
+        ? await axios.get(`${process.env.REACT_APP_API_URL}/api/files/byClient/${clientId}`, {
           headers: { Authorization: `Bearer ${token}` },
         })
-        : await axios.get("http://localhost:5000/api/files/my", {
+        : await axios.get(`${process.env.REACT_APP_API_URL}/api/files/my`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -36,7 +36,7 @@ function FileUploader({ clientId = null }) {
     if (clientId) formData.append("clientId", clientId);
 
     try {
-      await axios.post("http://localhost:5000/api/files/upload", formData, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/files/upload`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -54,7 +54,7 @@ function FileUploader({ clientId = null }) {
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this file?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/files/${id}`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/files/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchFiles();
@@ -162,14 +162,14 @@ function FileUploader({ clientId = null }) {
             <span style={styles.fileName}>📄 {f.original_name}</span>
             <span style={styles.actions}>
               {/* <a
-                href={`http://localhost:5000/${f.file_path}`}
+                href={`${process.env.REACT_APP_API_URL}/${f.file_path}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={styles.downloadLink}
               > */}
 
               <a
-                href={`http://localhost:5000/${f.file_path.replace(/^\/?/, '')}`}
+                href={`${process.env.REACT_APP_API_URL}/${f.file_path.replace(/^\/?/, '')}`}
                 // download
                 target="_blank"
                 rel="noopener noreferrer"
@@ -179,7 +179,7 @@ function FileUploader({ clientId = null }) {
               </a>
 
               {/* <a
-  href={`http://localhost:5000${f.file_path}`}   // 👈 absolute backend URL
+  href={`${process.env.REACT_APP_API_URL}${f.file_path}`}   // 👈 absolute backend URL
   // target="_blank"
   download
   rel="noopener noreferrer"

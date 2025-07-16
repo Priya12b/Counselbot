@@ -28,12 +28,12 @@ export default function MyLawyerChat() {
   /* ── fetch conversation + messages on mount ─────────────────────── */
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/lc/conversations", authHeader)
+      .get(`${process.env.REACT_APP_API_URL}/api/lc/conversations`, authHeader)
       .then((res) => {
         if (res.data.length) {
           setConvo(res.data[0]);
           return axios.get(
-            `http://localhost:5000/api/lc/messages/${res.data[0].id}`,
+            `${process.env.REACT_APP_API_URL}/api/lc/messages/${res.data[0].id}`,
             authHeader
           );
         }
@@ -62,7 +62,7 @@ export default function MyLawyerChat() {
     if (!input.trim() || !convo) return;
     axios
       .post(
-        "http://localhost:5000/api/lc/client/send",
+        `${process.env.REACT_APP_API_URL}/api/lc/client/send`,
         { lawyer_id: convo.lawyer_id, text: input },
         authHeader
       )
@@ -88,7 +88,7 @@ export default function MyLawyerChat() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/lc/upload",
+        `${process.env.REACT_APP_API_URL}/api/lc/upload`,
         formData,
         {
           headers: {
@@ -153,7 +153,7 @@ export default function MyLawyerChat() {
   /* ── message renderer ───────────────────────────────────────────── */
   const renderContent = (text) => {
     if (text.startsWith("/chat_files/")) {
-      const url = `http://localhost:5000${text}`;
+      const url = `${process.env.REACT_APP_API_URL}${text}`;
       const ext = text.split(".").pop().toLowerCase();
       if (["png", "jpg", "jpeg", "gif", "webp"].includes(ext)) {
         return (

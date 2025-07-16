@@ -21,7 +21,7 @@
 //         if (!selectedClient) return;
 
 //         axios
-//             .get("http://localhost:5000/api/lc/conversations", authHeader)
+//             .get("${process.env.REACT_APP_API_URL}/api/lc/conversations", authHeader)
 //             .then((res) => {
 //                 const existing = res.data.find(
 //                     (c) => c.client_id === selectedClient.id
@@ -29,7 +29,7 @@
 //                 if (existing) {
 //                     setConvId(existing.id);
 //                     return axios.get(
-//                         `http://localhost:5000/api/lc/messages/${existing.id}`,
+//                         `${process.env.REACT_APP_API_URL}/api/lc/messages/${existing.id}`,
 //                         authHeader
 //                     );
 //                 } else {
@@ -52,7 +52,7 @@
 //         try {
 //             const body = { client_id: selectedClient.id, text: input };
 //             const res = await axios.post(
-//                 "http://localhost:5000/api/lc/lawyer/send",
+//                 "${process.env.REACT_APP_API_URL}/api/lc/lawyer/send",
 //                 body,
 //                 authHeader
 //             );
@@ -247,7 +247,7 @@ function ClientChat({ selectedClient }) {
     if (!selectedClient) return;
 
     axios
-      .get("http://localhost:5000/api/lc/conversations", authHeader)
+      .get(`${process.env.REACT_APP_API_URL}/api/lc/conversations`, authHeader)
       .then((res) => {
         const existing = res.data.find(
           (c) => c.client_id === selectedClient.id
@@ -255,7 +255,7 @@ function ClientChat({ selectedClient }) {
         if (existing) {
           setConvId(existing.id);
           return axios.get(
-            `http://localhost:5000/api/lc/messages/${existing.id}`,
+            `${process.env.REACT_APP_API_URL}/api/lc/messages/${existing.id}`,
             authHeader
           );
         } else {
@@ -279,7 +279,7 @@ function ClientChat({ selectedClient }) {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/lc/lawyer/send",
+        `${process.env.REACT_APP_API_URL}/api/lc/lawyer/send`,
         body,
         authHeader
       );
@@ -316,7 +316,7 @@ function ClientChat({ selectedClient }) {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/lc/upload",
+        `${process.env.REACT_APP_API_URL}/api/lc/upload`,
         formData,
         {
           headers: {
@@ -362,7 +362,7 @@ function ClientChat({ selectedClient }) {
 
   const renderContent = (text) => {
     if (text.startsWith("/chat_files/")) {
-      const url = `http://localhost:5000${text}`;
+      const url = `${process.env.REACT_APP_API_URL}${text}`;
       const ext = text.split(".").pop().toLowerCase();
       if (["png", "jpg", "jpeg", "gif", "webp"].includes(ext)) {
         return (

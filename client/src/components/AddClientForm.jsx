@@ -52,7 +52,7 @@ if (user?.role === "client") return null;
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "http://localhost:5000/api/clients/add",
+        `${process.env.REACT_APP_API_URL}/api/clients/add`,
         form,
         { headers: { Authorization: `Bearer ${token}` } }
       );

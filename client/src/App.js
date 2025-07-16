@@ -15,7 +15,7 @@ import TemplateUploader from "./components/TemplateUploader";
 import jsPDF from "jspdf";
 import "jspdf-autotable"; // If you're using tables too
 import "./fonts/NotoDev-normal";
-import  "./fonts/NotoGuj-normal" // <-- Adjust path
+import "./fonts/NotoGuj-normal" // <-- Adjust path
 import "./index.css";
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
@@ -164,13 +164,13 @@ function App() {
       let res;
       if (genMode === "smart") {
         if (!docType) return toast.error("Pick a doc type!");
-        res = await axios.post("http://localhost:5000/api/documents/generate", {
+        res = await axios.post(`${process.env.REACT_APP_API_URL}/api/documents/generate`, {
           docType,
           clientInfo,
         });
       } else {
         if (!templatePath) return toast.error("Upload a template first!");
-        res = await axios.post("http://localhost:5000/api/documents/generate-from-template", {
+        res = await axios.post(`${process.env.REACT_APP_API_URL}/api/documents/generate-from-template`, {
           templatePath,
           clientInfo,
         });
@@ -197,7 +197,7 @@ function App() {
     try {
       const token = localStorage.getItem("token");
       const { data } = await axios.post(
-        "http://localhost:5000/api/documents/save",
+        `${process.env.REACT_APP_API_URL}/api/documents/save`,
         {
           client_id: clientId,
           doc_type: customDocType || docType,
@@ -244,9 +244,9 @@ function App() {
     let y = margin;
 
     if (lang === "hi") {
-      pdf.setFont("NotoSansDevanagari-Regular");  
+      pdf.setFont("NotoSansDevanagari-Regular");
     } else if (lang === "gu") {
-      pdf.setFont("NotoSansGujarati-Regular");  
+      pdf.setFont("NotoSansGujarati-Regular");
     } else {
       // English - use default font
       pdf.setFont("helvetica"); // default jsPDF font

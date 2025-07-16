@@ -11,7 +11,7 @@
 
 //   const fetchClients = async () => {
 //     const token = localStorage.getItem("token");
-//     const res = await axios.get("http://localhost:5000/api/clients/my", {
+//     const res = await axios.get("${process.env.REACT_APP_API_URL}/api/clients/my", {
 //       headers: { Authorization: `Bearer ${token}` },
 //     });
 //     setClients(res.data);
@@ -116,7 +116,7 @@ function ClientList() {
 
   const fetchClients = async () => {
     const token = localStorage.getItem("token");
-    const res = await axios.get("http://localhost:5000/api/clients/my", {
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/clients/my`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     setClients(res.data);

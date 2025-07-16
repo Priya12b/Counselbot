@@ -30,7 +30,7 @@ function Register({ goToLogin }) {
     const fetchInviteData = async () => {
       if (!inviteToken) return;
       try {
-        const res = await axios.get(`http://localhost:5000/api/invite/${inviteToken}`);
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/invite/${inviteToken}`);
         const { name, email, firm_name } = res.data;
 
         setForm((prev) => ({
@@ -78,7 +78,7 @@ function Register({ goToLogin }) {
       return;
     }
     try {
-      await axios.post("http://localhost:5000/api/auth/register", form);
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/register`, form);
       toast.success("Registered! Redirecting to login…");
       setTimeout(
         () =>

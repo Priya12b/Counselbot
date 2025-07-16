@@ -37,7 +37,7 @@ function ClientProfile({ clientId, onBack, refreshClients }) {
 
   const fetchClient = async () => {
     const token = localStorage.getItem("token");
-    const res = await axios.get("http://localhost:5000/api/clients/my", {
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/clients/my`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     const found = res.data.find((c) => c.id === parseInt(clientId));
@@ -48,7 +48,7 @@ function ClientProfile({ clientId, onBack, refreshClients }) {
     if (!clientId) return;
     const token = localStorage.getItem("token");
     const res = await axios.get(
-      `http://localhost:5000/api/documents/byClient/${clientId}`,
+      `${process.env.REACT_APP_API_URL}/api/documents/byClient/${clientId}`,
       {
         headers: { Authorization: `Bearer ${token}` },
       }
@@ -59,7 +59,7 @@ function ClientProfile({ clientId, onBack, refreshClients }) {
 
   const fetchFiles = async () => {
     const token = localStorage.getItem("token");
-    const res = await axios.get(`http://localhost:5000/api/files/byClient/${clientId}`, {
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/files/byClient/${clientId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     setFiles(res.data);
@@ -98,7 +98,7 @@ function ClientProfile({ clientId, onBack, refreshClients }) {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `http://localhost:5000/api/clients/${clientId}`,
+        `${process.env.REACT_APP_API_URL}/api/clients/${clientId}`,
         editForm,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -130,7 +130,7 @@ function ClientProfile({ clientId, onBack, refreshClients }) {
 
     try {
       await axios.delete(
-        `http://localhost:5000/api/clients/${clientId}`,
+        `${process.env.REACT_APP_API_URL}/api/clients/${clientId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -150,7 +150,7 @@ function ClientProfile({ clientId, onBack, refreshClients }) {
     const token = localStorage.getItem("token");
     try {
       await axios.delete(
-        `http://localhost:5000/api/documents/${docId}`,
+        `${process.env.REACT_APP_API_URL}/api/documents/${docId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
