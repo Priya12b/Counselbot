@@ -401,17 +401,13 @@ function ClientChat({ selectedClient }) {
 
       <div
         style={{
-          height: "300px",                  // ✅ fixed height ensures scroll
-          overflowY: "scroll",              // ✅ always enable vertical scroll
+          maxHeight: 300,
+          overflowY: "auto",
           padding: "0.5rem",
           border: "1px solid #eee",
           borderRadius: 10,
           background: "#fafafa",
           marginBottom: "1rem",
-          display: "flex",                  // ✅ allow stacking messages properly
-          flexDirection: "column",
-          flexGrow: 1,       // ✅ optional, keeps layout clean
-          gap: "0.3rem",
         }}
       >
         {messages.map((m, i) => (
@@ -422,7 +418,6 @@ function ClientChat({ selectedClient }) {
               justifyContent:
                 m.sender_type === "lawyer" ? "flex-end" : "flex-start",
               margin: "0.2rem 0",
-              flexShrink: 0,
             }}
           >
             <div>

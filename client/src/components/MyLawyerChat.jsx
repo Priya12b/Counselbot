@@ -54,8 +54,8 @@ export default function MyLawyerChat() {
       minute: "2-digit",
     });
 
-  const pushMessage = (msg) =>{
-    setMessages((prev) => [...prev, msg]);}
+  const pushMessage = (msg) =>
+    setMessages((prev) => [...prev, msg]);
 
   /* ── send text message ──────────────────────────────────────────── */
   const send = () => {
@@ -192,17 +192,13 @@ export default function MyLawyerChat() {
 
       <div
         style={{
-          height: "300px",  // ✅ FIXED height so scroll can work well
-          overflowY: "scroll",  // ✅ always enable scroll
+          maxHeight: 300,
+          overflowY: "auto",
           padding: "0.5rem",
           border: "1px solid #eee",
           borderRadius: 10,
           marginBottom: "1rem",
           background: "#fafafa",
-          display: "flex",
-          flexDirection: "column", // ✅ messages stack properly
-          flexGrow: 1,       // ✅ optional, keeps layout clean
-          gap: "0.3rem",
         }}
       >
         {messages.map((m, i) => (
@@ -213,7 +209,6 @@ export default function MyLawyerChat() {
               justifyContent:
                 m.sender_type === "client" ? "flex-end" : "flex-start",
               margin: "0.2rem 0",
-              flexShrink: 0,
             }}
           >
             <div>
