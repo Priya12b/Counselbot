@@ -57,7 +57,7 @@ router.post("/add", authMiddleware, requireRole("admin", "lawyer"), async (req, 
           }
         });
 
-        const inviteLink = `http://localhost:3000//register?invite=${token}`;
+        const inviteLink = `https://counselbot.vercel.app/register?invite=${token}`;
 
         await transporter.sendMail({
           from: `"CounselBot" <${process.env.EMAIL_USER}>`,
