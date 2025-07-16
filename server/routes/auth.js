@@ -33,6 +33,7 @@ router.post("/register", async (req, res) => {
       const inviterRole = inviteRow[0].inviter_role;
       const addedBy = inviteRow[0].added_by_user_id;
       const clientId = inviteRow[0].client_id;
+      const inviterId = inviteRow[0].added_by_user_id;
 
       // ✅ Only assign firm if admin invited
       firmId = inviterRole === "admin" ? inviteRow[0].firm_id : null;
