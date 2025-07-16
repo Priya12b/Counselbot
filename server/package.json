@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "jest"
   },
   "jest": {
@@ -31,6 +32,7 @@
     "multer": "^2.0.1",
     "mysql2": "^3.14.1",
     "nodemailer": "^7.0.5",
+    "pdf-parse": "^1.1.1",
     "pizzip": "^3.2.0",
     "uuid": "^11.1.0"
   },
