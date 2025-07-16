@@ -201,6 +201,8 @@ export default function MyLawyerChat() {
           background: "#fafafa",
           display: "flex",
           flexDirection: "column", // ✅ messages stack properly
+          flexGrow: 1,       // ✅ optional, keeps layout clean
+          gap: "0.3rem",
         }}
       >
         {messages.map((m, i) => (
@@ -211,6 +213,7 @@ export default function MyLawyerChat() {
               justifyContent:
                 m.sender_type === "client" ? "flex-end" : "flex-start",
               margin: "0.2rem 0",
+              flexShrink: 0,
             }}
           >
             <div>

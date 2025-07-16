@@ -410,6 +410,8 @@ function ClientChat({ selectedClient }) {
           marginBottom: "1rem",
           display: "flex",                  // ✅ allow stacking messages properly
           flexDirection: "column",
+          flexGrow: 1,       // ✅ optional, keeps layout clean
+          gap: "0.3rem",
         }}
       >
         {messages.map((m, i) => (
@@ -420,6 +422,7 @@ function ClientChat({ selectedClient }) {
               justifyContent:
                 m.sender_type === "lawyer" ? "flex-end" : "flex-start",
               margin: "0.2rem 0",
+              flexShrink: 0,
             }}
           >
             <div>
