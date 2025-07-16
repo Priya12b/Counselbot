@@ -401,13 +401,15 @@ function ClientChat({ selectedClient }) {
 
       <div
         style={{
-          maxHeight: 300,
-          overflowY: "auto",
+          height: "300px",                  // ✅ fixed height ensures scroll
+          overflowY: "scroll",              // ✅ always enable vertical scroll
           padding: "0.5rem",
           border: "1px solid #eee",
           borderRadius: 10,
           background: "#fafafa",
           marginBottom: "1rem",
+          display: "flex",                  // ✅ allow stacking messages properly
+          flexDirection: "column",
         }}
       >
         {messages.map((m, i) => (

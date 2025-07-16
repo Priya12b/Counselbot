@@ -314,7 +314,11 @@ function App() {
           {user?.role === "admin" && (
             <button
               style={getNavBtnStyle("assign_client")}
-              onClick={() => { setPage("assign_client"); /* close drawer optional */ }}
+              onClick={() => {
+                setPage("assign_client"); 
+                setTimeout(() => savedDocsRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+                closeDrawer?.();
+              }}
               onMouseEnter={() => setHoveredBtn("assign_client")}
               onMouseLeave={() => setHoveredBtn(null)}
             >
@@ -325,7 +329,11 @@ function App() {
           {user.role === "client" && (
             <button
               style={getNavBtnStyle("lawyer_chat")}
-              onClick={() => setPage("lawyer_chat")}
+              onClick={() => {
+                setPage("lawyer_chat"); 
+                setTimeout(() => savedDocsRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+                closeDrawer?.();
+              }}
               onMouseEnter={() => setHoveredBtn("lawyer_chat")}
               onMouseLeave={() => setHoveredBtn(null)}
             >

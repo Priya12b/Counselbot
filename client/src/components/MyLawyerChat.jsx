@@ -192,13 +192,15 @@ export default function MyLawyerChat() {
 
       <div
         style={{
-          maxHeight: 300,
-          overflowY: "auto",
+          height: "300px",  // ✅ FIXED height so scroll can work well
+          overflowY: "scroll",  // ✅ always enable scroll
           padding: "0.5rem",
           border: "1px solid #eee",
           borderRadius: 10,
           marginBottom: "1rem",
           background: "#fafafa",
+          display: "flex",
+          flexDirection: "column", // ✅ messages stack properly
         }}
       >
         {messages.map((m, i) => (
