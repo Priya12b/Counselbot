@@ -13,9 +13,9 @@ import AssignClient from "./components/AssignClient";
 import MyLawyerChat from "./components/MyLawyerChat";
 import TemplateUploader from "./components/TemplateUploader";
 import jsPDF from "jspdf";
-import "jspdf-autotable"; // If you're using tables too
+import "jspdf-autotable"; 
 import "./fonts/NotoDev-normal";
-import "./fonts/NotoGuj-normal" // <-- Adjust path
+import "./fonts/NotoGuj-normal" 
 import "./index.css";
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
@@ -215,26 +215,6 @@ function App() {
       toast.error("Failed to save document.");
     }
   };
-
-
-
-  // const downloadPDF = () => {
-  //   const pdf = new jsPDF();
-  //   const pageHeight = pdf.internal.pageSize.height;
-  //   const lineHeight = 10;
-  //   const margin = 20;
-  //   const lines = pdf.splitTextToSize(generatedDoc, 170);
-  //   let y = margin;
-  //   lines.forEach((line) => {
-  //     if (y + lineHeight > pageHeight - margin) {
-  //       pdf.addPage();
-  //       y = margin;
-  //     }
-  //     pdf.text(line, margin, y);
-  //     y += lineHeight;
-  //   });
-  //   pdf.save("document.pdf");
-  // };
   const downloadPDF = (text, lang) => {
     const pdf = new jsPDF();
 
@@ -274,9 +254,6 @@ function App() {
     return "en";
   };
 
-  // const inputText = getTextFromUser();
-  // const lang = detectLang(inputText);
-
 
 
   /* ── NavButtons component (reused in nav + drawer) ───────────────── */
@@ -303,7 +280,6 @@ function App() {
         <>
           <button
             style={getNavBtnStyle("dashboard")}
-            // onClick={() => setPage("dashboard")}
             onClick={() => { setPage("dashboard"); closeDrawer?.(); }}
             onMouseEnter={() => setHoveredBtn("dashboard")}
             onMouseLeave={() => setHoveredBtn(null)}
@@ -315,7 +291,7 @@ function App() {
             <button
               style={getNavBtnStyle("assign_client")}
               onClick={() => {
-                setPage("assign_client"); 
+                setPage("assign_client");
                 setTimeout(() => savedDocsRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
                 closeDrawer?.();
               }}
@@ -330,7 +306,7 @@ function App() {
             <button
               style={getNavBtnStyle("lawyer_chat")}
               onClick={() => {
-                setPage("lawyer_chat"); 
+                setPage("lawyer_chat");
                 setTimeout(() => savedDocsRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
                 closeDrawer?.();
               }}
@@ -487,7 +463,6 @@ function App() {
       ) : (
         <div className="section-card" style={styles.section}>
           <h3>Welcome, {user.name}!</h3>
-          {/* <ClientList setPage={setPage} setClientId={setClientId} /> */}
           {user.role === "client"
             ? <ClientHome setPage={setPage} />      // 🔄 show client‑friendly dash
             : <ClientList setPage={setPage} setClientId={setClientId} />}
@@ -499,44 +474,6 @@ function App() {
           {/* -------------- Generate Docs -------------- */}
           {page === "generate" && (
             <div ref={generateRef}>
-              {/* <h2>🧠 Legal Document Generator</h2>
-              <label style={styles.label}>📄 Document Type:</label>
-              <select
-                value={docType}
-                onChange={(e) => setDocType(e.target.value)}
-                style={styles.input}
-              >
-                <option value="">-- Select Document Type --</option>
-                <option value="Affidavit">Affidavit</option>
-                <option value="Rent Agreement">Rent Agreement</option>
-                <option value="NDA">NDA (Non-Disclosure Agreement)</option>
-                <option value="Employment Contract">Employment Contract</option>
-                <option value="Legal Notice">Legal Notice</option>
-                <option value="Other">Other (type manually below)</option>
-              </select>
-
-              {docType === "Other" && (
-                <input
-                  type="text"
-                  value={customDocType}
-                  onChange={(e) => setCustomDocType(e.target.value)}
-                  placeholder="Enter custom document type"
-                  style={{ ...styles.input, marginTop: "0.5rem" }}
-                />
-              )}
-
-              <label style={styles.label}>👤 Client Info:</label>
-              <textarea
-                rows={6}
-                value={clientInfo}
-                onChange={(e) => setClientInfo(e.target.value)}
-                placeholder="e.g. Ramesh is renting a house in Surat for ₹10,000..."
-                style={{ ...styles.input, width: "90%" }}
-              />
-
-              <button onClick={handleGenerate} style={styles.button}>
-                Generate Document
-              </button> */}
               <h2>🧠 Legal Document Generator</h2>
 
               {/* --- mode toggle --- */}
@@ -564,13 +501,6 @@ function App() {
               {genMode === "smart" && (
                 <>
                   <label style={styles.label}>📄 Document Type:</label>
-                  {/* <select
-      value={docType}
-      onChange={(e) => setDocType(e.target.value)}
-      style={styles.input}
-    >
-
-    </select> */}
                   <select
                     value={docType}
                     onChange={(e) => setDocType(e.target.value)}

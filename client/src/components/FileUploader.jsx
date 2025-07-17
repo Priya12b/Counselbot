@@ -161,12 +161,6 @@ function FileUploader({ clientId = null }) {
           <li key={f.id} style={styles.fileItem}>
             <span style={styles.fileName}>📄 {f.original_name}</span>
             <span style={styles.actions}>
-              {/* <a
-                href={`${process.env.REACT_APP_API_URL}/${f.file_path}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={styles.downloadLink}
-              > */}
 
               <a
                 href={`${process.env.REACT_APP_API_URL}/${f.file_path.replace(/^\/?/, '')}`}
@@ -177,17 +171,6 @@ function FileUploader({ clientId = null }) {
               >
                 ⬇️ Download
               </a>
-
-              {/* <a
-  href={`${process.env.REACT_APP_API_URL}${f.file_path}`}   // 👈 absolute backend URL
-  // target="_blank"
-  download
-  rel="noopener noreferrer"
-  style={styles.downloadLink}
->
-
-                ⬇️ Download
-              </a> */}
               <button onClick={() => handleDelete(f.id)} style={styles.deleteBtn} title="Delete" >
                 ❌ Delete
               </button>

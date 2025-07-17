@@ -1,35 +1,3 @@
-// import { createContext, useState, useEffect } from "react";
-// import axios from "axios";
-// export const AuthContext = createContext();
-
-// export function AuthProvider({ children }) {
-//   const [user, setUser] = useState(null);
-
-//   useEffect(() => {
-//     const storedUser = localStorage.getItem("user");
-//     if (storedUser) setUser(JSON.parse(storedUser));
-//   }, []);
-
-//   const login = (user, token) => {
-//     setUser(user);
-//     localStorage.setItem("user", JSON.stringify(user));
-//     localStorage.setItem("token", token);
-//     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-//   };
-
-//   const logout = () => {
-//     setUser(null);
-//     localStorage.removeItem("user");
-//     localStorage.removeItem("token");
-//     delete axios.defaults.headers.common["Authorization"];
-//   };
-
-//   return (
-//     <AuthContext.Provider value={{ user, login, logout }}>
-//       {children}
-//     </AuthContext.Provider>
-//   );
-// }
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
 

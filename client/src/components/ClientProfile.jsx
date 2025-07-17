@@ -265,15 +265,6 @@ function ClientProfile({ clientId, onBack, refreshClients }) {
       fontSize: "0.8rem",
       color: "#666",
     },
-    // docContent: {
-    //   background: "#f7f7f7",
-    //   padding: "0.75rem 1rem",
-    //   borderRadius: "8px",
-    //   fontFamily: "monospace",
-    //   whiteSpace: "pre-wrap",
-    //   maxHeight: "160px",
-    //   overflow: "auto",
-    // },
     actionRow: {
       display: "flex",
       gap: "0.75rem",
@@ -443,70 +434,5 @@ function ClientProfile({ clientId, onBack, refreshClients }) {
     </div>
   );
 }
-
-
-//   return (
-//     <div style={styles.container}>
-//       <button style={{ ...styles.button, ...styles.backBtn }} onClick={onBack}>
-//         ← Back to Client List
-//       </button>
-
-//       <div style={styles.section}>
-//         <h2>👤 Client Profile</h2>
-//         <p>
-//           <span style={styles.label}>Name:</span> {client.name}
-//         </p>
-//         <p>
-//           <span style={styles.label}>Email:</span> {client.email}
-//         </p>
-//         <p>
-//           <span style={styles.label}>Phone:</span> {client.phone}
-//         </p>
-
-//         <button
-//           style={{ ...styles.button, ...styles.editBtn }}
-//           onClick={handleEdit}
-//         >
-//           ✏️ Edit
-//         </button>
-//         <button
-//           style={{ ...styles.button, ...styles.deleteBtn }}
-//           onClick={handleDelete}
-//         >
-//           🗑️ Delete
-//         </button>
-//       </div>
-
-//       <hr />
-
-//       <div style={styles.section}>
-//         <NotesSection clientId={parseInt(clientId)} />
-//       </div>
-
-//       <hr />
-
-//       <div style={styles.section}>
-//         <h4>📂 Documents</h4>
-//         <ul style={styles.docList}>
-//           {documents.map((doc) => (
-//             <li key={doc.id} style={styles.docItem}>
-//               <strong>{doc.doc_type}</strong> -{" "}
-//               {new Date(doc.created_at).toLocaleString()}
-//               <div style={styles.docContent}>
-//                 {doc.content.slice(0, 300)}...
-//               </div>
-//             </li>
-//           ))}
-//         </ul>
-//       </div>
-
-//       <hr />
-
-//       <div style={styles.section}>
-//         <FileUploader clientId={clientId} onUploadComplete={fetchFiles} onFileDeleted={handleFileDeleted} />
-//       </div>
-//     </div>
-//   );
-// }
 
 export default ClientProfile;

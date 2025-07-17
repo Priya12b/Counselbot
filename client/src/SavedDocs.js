@@ -56,48 +56,48 @@ function SavedDocs() {
 
 
   const detectLang = (text) => {
-  if (/[\u0A80-\u0AFF]/.test(text)) return "gu";  // Gujarati Unicode block
-  if (/[\u0900-\u097F]/.test(text)) return "hi";  // Devanagari block (Hindi)
-  return "en"; // default to English
-};
+    if (/[\u0A80-\u0AFF]/.test(text)) return "gu";  // Gujarati Unicode block
+    if (/[\u0900-\u097F]/.test(text)) return "hi";  // Devanagari block (Hindi)
+    return "en"; // default to English
+  };
 
-const downloadPDF = () => {
-  if (!selectedDoc || !selectedDoc.content) return;
+  const downloadPDF = () => {
+    if (!selectedDoc || !selectedDoc.content) return;
 
-  const text = selectedDoc.content;
-  const lang = detectLang(text);
+    const text = selectedDoc.content;
+    const lang = detectLang(text);
 
-  const pdf = new jsPDF();
-  const pageHeight = pdf.internal.pageSize.height;
-  const lineHeight = 10;
-  const margin = 10;
-  const maxLineWidth = 190;
+    const pdf = new jsPDF();
+    const pageHeight = pdf.internal.pageSize.height;
+    const lineHeight = 10;
+    const margin = 10;
+    const maxLineWidth = 190;
 
-  // 👇 Set the correct font based on language
-  if (lang === "hi") {
-    pdf.setFont("NotoSansDevanagari-Regular");  
-  } else if (lang === "gu") {
-    pdf.setFont("NotoSansGujarati-Regular"); // Gujarati font 
-  } else {
-    pdf.setFont("helvetica"); // default English font
-  }
-
-  pdf.setFontSize(12);
-  const lines = pdf.splitTextToSize(text, maxLineWidth);
-
-  let y = margin;
-  lines.forEach(line => {
-    if (y + lineHeight > pageHeight - margin) {
-      pdf.addPage();
-      y = margin;
+    // 👇 Set the correct font based on language
+    if (lang === "hi") {
+      pdf.setFont("NotoSansDevanagari-Regular");
+    } else if (lang === "gu") {
+      pdf.setFont("NotoSansGujarati-Regular"); // Gujarati font 
+    } else {
+      pdf.setFont("helvetica"); // default English font
     }
-    pdf.text(line, margin, y);
-    y += lineHeight;
-  });
 
-  const filename = `${selectedDoc.doc_type || "document"}.pdf`;
-  pdf.save(filename);
-};
+    pdf.setFontSize(12);
+    const lines = pdf.splitTextToSize(text, maxLineWidth);
+
+    let y = margin;
+    lines.forEach(line => {
+      if (y + lineHeight > pageHeight - margin) {
+        pdf.addPage();
+        y = margin;
+      }
+      pdf.text(line, margin, y);
+      y += lineHeight;
+    });
+
+    const filename = `${selectedDoc.doc_type || "document"}.pdf`;
+    pdf.save(filename);
+  };
 
   const styles = {
     container: {
@@ -110,7 +110,7 @@ const downloadPDF = () => {
       listStyle: "none",
       padding: 0,
     },
-    
+
     docItem: {
       display: "flex",
       justifyContent: "space-between",
@@ -160,7 +160,7 @@ const downloadPDF = () => {
       ) : (
         <ul style={styles.docList}>
           {documents.map((doc) => (
-          
+
             <li key={doc.id} style={styles.docItem}>
               <div onClick={() => setSelectedDoc(doc)} style={{ cursor: "pointer" }}>
                 <strong>{doc.doc_type}</strong> — {doc.client_name || "No Client Linked"}<br />
