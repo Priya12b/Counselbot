@@ -169,6 +169,28 @@ function Register({ goToLogin }) {
       <button className="register-btn" onClick={handleRegister}>
         ➕ Register
       </button>
+      <p>
+        Already have an account?{" "}
+        <span
+          className="link-button"
+          onClick={() => {
+            const loginButton = document.querySelector('.nav-links button:nth-child(1)');
+            if (loginButton) {
+              loginButton.click();
+            } else {
+              console.warn("Login button not found in the navigation bar.");
+            }
+          }}
+          style={{
+            textDecoration: 'underline',
+            cursor: 'pointer',
+            color: '#3498db',
+          }}
+        >
+          Login here
+        </span>
+      </p>
+
     </div>
   );
 }

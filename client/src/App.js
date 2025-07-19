@@ -15,9 +15,9 @@ import TemplateUploader from "./components/TemplateUploader";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import jsPDF from "jspdf";
-import "jspdf-autotable"; 
+import "jspdf-autotable";
 import "./fonts/NotoDev-normal";
-import "./fonts/NotoGuj-normal" 
+import "./fonts/NotoGuj-normal"
 import "./index.css";
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
@@ -460,12 +460,12 @@ function App() {
       {/* -----------------------------------------------------------------
           Auth vs. main app content
       ----------------------------------------------------------------- */}
-       {!user ? (
-  page === "register" ? <Register /> :
-  page === "reset_password" ? <ResetPassword setPage={setPage} /> :
-  page === "forgot_password" ? <ForgotPassword setPage={setPage} /> :
-  <Login setPage={setPage} />
-) : (
+      {!user ? (
+        page === "register" ? <Register /> :
+          page === "reset_password" ? <ResetPassword setPage={setPage} /> :
+            page === "forgot_password" ? <ForgotPassword setPage={setPage} /> :
+              <Login setPage={setPage} />
+      ) : (
         <div className="section-card" style={styles.section}>
           <h3>Welcome, {user.name}!</h3>
           {user.role === "client"

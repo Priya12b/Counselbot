@@ -122,7 +122,10 @@ html {
   cursor: pointer;
   transition: transform 0.15s ease;
 }
-.login-btn:active { transform: scale(0.98); }
+
+.login-btn:active {
+  transform: scale(0.98);
+}
 
 /* Forgot password link style */
 .forgot-password-container {
@@ -151,18 +154,27 @@ html {
 
 /* Extra breathing room only on monster (>2560 px) screens */
 @media (min-width: 2560px) {
-  .login-container { margin-block-start: 10rem;
-margin-top: 16rem;
-padding: 24rem 5rem;
- }
+  .login-container {
+    margin-block-start: 10rem;
+    margin-top: 16rem;
+    padding: 24rem 5rem;
+  }
 }
+
 @media (min-width: 3840px) {
   .login-container {
-    width: 1800px;          /* or whatever looks sweet on your monitor */
+    width: 1800px;
+    /* or whatever looks sweet on your monitor */
     margin-block-start: 24rem;
     padding: 15rem;
   }
-  .login-heading      { font-size: 3.6rem; }
+
+  .login-heading {
+    font-size: 3.6rem;
+  }
+
   .login-input,
-  .login-btn          { font-size: 2.35rem; }
+  .login-btn {
+    font-size: 2.35rem;
+  }
 }
