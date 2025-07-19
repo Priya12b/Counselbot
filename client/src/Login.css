@@ -124,6 +124,31 @@ html {
 }
 .login-btn:active { transform: scale(0.98); }
 
+/* Forgot password link style */
+.forgot-password-container {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.forgot-password-btn {
+  background: none;
+  border: none;
+  color: #2e86de;
+  font-size: clamp(1rem, 1.1vw, 1.25rem);
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.forgot-password-btn:hover {
+  color: #1b4f9c;
+  transform: scale(1.05);
+}
+
+.forgot-password-btn:active {
+  transform: scale(0.98);
+}
+
 /* Extra breathing room only on monster (>2560 px) screens */
 @media (min-width: 2560px) {
   .login-container { margin-block-start: 10rem;

@@ -387,4 +387,85 @@ router.post("/login", (req, res) => {
   );
 });
 
+
+
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+// Send OTP
+router.post("/forgot-password", async (req, res) => {
+  const { email } = req.body;
+  const otp = crypto.randomInt(100000, 999999).toString();
+
+  const expiry = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
+
+  const [result] = await db.promise().query(
+    "UPDATE users SET otp_code = ?, otp_expires_at = ? WHERE email = ?",
+    [otp, expiry, email]
+  );
+
+  if (result.affectedRows === 0) {
+    return res.status(404).json({ message: "User not found." });
+  }
+
+  
+  // (err, result) => {
+  //   if (err || result.affectedRows === 0) return res.status(404).json({ message: "User not found." });
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "Your Password Reset OTP",
+    text: `Your OTP is: ${otp}. It will expire in 15 minutes.`,
+  };
+
+  transporter.sendMail(mailOptions, (err) => {
+    if (err) return res.status(500).json({ message: "Email failed." });
+    res.json({ success: true });
+  });
+}
+);
+
+// Reset password
+router.post("/reset-password", async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+
+  try {
+    // 🧠 Step 1: Lookup OTP and expiry
+    const [rows] = await db.promise().query(
+      "SELECT otp_code, otp_expires_at FROM users WHERE email = ?",
+      [email]
+    );
+
+    if (!rows.length) return res.status(404).json({ message: "User not found" });
+
+    const { otp_code, otp_expires_at } = rows[0];
+
+    // ✅ Validate OTP
+    if (otp !== otp_code) return res.status(400).json({ message: "Invalid OTP" });
+    if (new Date() > new Date(otp_expires_at)) return res.status(400).json({ message: "OTP expired" });
+
+    // 🔐 Step 2: Hash and update password
+    const hashed = await bcrypt.hash(newPassword, 10);
+
+    await db.promise().query(
+      "UPDATE users SET password = ?, otp_code = NULL, otp_expires_at = NULL WHERE email = ?",
+      [hashed, email]
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("❌ Reset password error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 module.exports = router;

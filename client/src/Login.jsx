@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { AuthContext } from "./AuthContext";
 import "./Login.css";                   // 👈 new styles
 
-function Login() {
+function Login({setPage}) {
   const [form, setForm] = useState({ email: "", password: "" });
   const { login } = useContext(AuthContext);
   const { user } = useContext(AuthContext);
@@ -84,6 +84,17 @@ function Login() {
             color: '#3498db',
           }}>Register here</span>
       </p>
+
+   <p className="forgot-password-container">
+  <button
+    onClick={() => setPage("forgot_password")}
+    className="forgot-password-btn"
+  >
+    🔁 Forgot Password?
+  </button>
+</p>
+
+
     </div>
   );
 }

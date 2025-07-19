@@ -12,6 +12,8 @@ import FileUploader from "./components/FileUploader";
 import AssignClient from "./components/AssignClient";
 import MyLawyerChat from "./components/MyLawyerChat";
 import TemplateUploader from "./components/TemplateUploader";
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
 import jsPDF from "jspdf";
 import "jspdf-autotable"; 
 import "./fonts/NotoDev-normal";
@@ -411,7 +413,7 @@ function App() {
         <div className="logo-container desktop-only" onClick={() => setPage("dashboard")} title="Go to Dashboard">
           <h1 className="logo">
             <span className="logo-icon">⚖️</span>
-            <span className="logo-text">Councel<span className="logo-highlight">Bot</span></span>
+            <span className="logo-text">Counsel<span className="logo-highlight">Bot</span></span>
           </h1>
           <div className="tagline">Your AI Legal Assistant 👩‍⚖️📄</div>
         </div>
@@ -422,7 +424,7 @@ function App() {
   title="Go to Dashboard"
 >
   <span className="logo-icon">⚖️</span>
-  <span className="logo-text">Councel<span className="logo-highlight">Bot</span></span>
+  <span className="logo-text">Counsel<span className="logo-highlight">Bot</span></span>
 </h1> */}
 
 
@@ -458,9 +460,12 @@ function App() {
       {/* -----------------------------------------------------------------
           Auth vs. main app content
       ----------------------------------------------------------------- */}
-      {!user ? (
-        page === "register" ? <Register /> : <Login />
-      ) : (
+       {!user ? (
+  page === "register" ? <Register /> :
+  page === "reset_password" ? <ResetPassword setPage={setPage} /> :
+  page === "forgot_password" ? <ForgotPassword setPage={setPage} /> :
+  <Login setPage={setPage} />
+) : (
         <div className="section-card" style={styles.section}>
           <h3>Welcome, {user.name}!</h3>
           {user.role === "client"
