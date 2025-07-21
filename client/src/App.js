@@ -53,6 +53,7 @@ function App() {
   const savedDocsRef = useRef(null);
   const chatbotRef = useRef(null);
   const fileUploaderRef = useRef(null);
+  const profileRef = useRef(null);
 
   /* ── Helpers ─────────────────────────────────────────────────────── */
   const NAV_HEIGHT = 72;
