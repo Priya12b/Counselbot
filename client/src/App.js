@@ -14,6 +14,7 @@ import MyLawyerChat from "./components/MyLawyerChat";
 import TemplateUploader from "./components/TemplateUploader";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
+import Profile from "./components/Profile";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import "./fonts/NotoDev-normal";
@@ -369,6 +370,18 @@ function App() {
             File Uploader
           </button>
           <button
+              style={getNavBtnStyle("profile")}
+              onClick={() => {
+                setPage("profile"); 
+                setTimeout(() =>profileRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+                closeDrawer?.();
+              }}
+              onMouseEnter={() => setHoveredBtn("profile")}
+              onMouseLeave={() => setHoveredBtn(null)}
+            >
+               Profile
+            </button>
+          <button
             style={{ ...styles.navBtn, backgroundColor: "#e74c3c" }}
             onClick={logout}
             onMouseEnter={() => setHoveredBtn("logout")}
@@ -597,6 +610,9 @@ function App() {
               <FileUploader clientId={clientId} />
             </div>
           )}
+
+          {page === "profile" &&  (<div ref={profileRef}> <Profile /> </div>)}
+
 
           {/* -------------- Client Profile -------------- */}
           {page === "client_profile" && <ClientProfile clientId={clientId} />}

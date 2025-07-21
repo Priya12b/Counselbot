@@ -18,6 +18,8 @@ const fileRoutes = require("./routes/files");
 const templateRoutes = require("./routes/templates");
 const lawyerClientChatRoutes = require("./routes/lc_chat");
 const inviteRoutes = require("./routes/invites");
+const profileRoutes = require('./routes/profile');
+app.use('/api/profile', profileRoutes);
 app.use("/api/invite", inviteRoutes);
 const path = require("path");
 app.use("/api/lc", lawyerClientChatRoutes);
