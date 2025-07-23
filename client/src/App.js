@@ -344,7 +344,7 @@ function App() {
             onMouseEnter={() => setHoveredBtn("saved_docs")}
             onMouseLeave={() => setHoveredBtn(null)}
           >
-            Saved Documents
+            Saved Docs
           </button>
           <button
             style={getNavBtnStyle("chatbot")}
